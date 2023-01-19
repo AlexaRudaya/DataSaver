@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DataSaver.ApplicationCore.Entities
 {
-    public sealed class Topic
+    public sealed class Category
     {
         [Key]
         public int Id { get; set; }
@@ -12,7 +11,7 @@ namespace DataSaver.ApplicationCore.Entities
         public string? Name { get; set; }
         public DateTime DateCreated { get; set; }
 
-        public Topic()
+        public Category()
         {
             DateCreated = DateTime.Now;
         }
