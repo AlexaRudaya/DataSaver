@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataSaver.Infrastructure.Data
 {
-    public sealed class TopicContext : DbContext
+    public sealed class LinkContext : DbContext
     {
         public DbSet<Topic> Topics { get; set; }
 
@@ -11,7 +11,7 @@ namespace DataSaver.Infrastructure.Data
 
         public DbSet<Category> Categories { get; set; }
 
-        public TopicContext(DbContextOptions<TopicContext> options) : base(options)
+        public LinkContext(DbContextOptions<LinkContext> options) : base(options)
         {
         }
     }

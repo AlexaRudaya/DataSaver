@@ -10,10 +10,18 @@ namespace DataSaver.ApplicationCore.Entities
 
         [Required]
         public string? Name { get; set; }
+
         public DateTime DateCreated { get; set; }
 
         public Topic()
         {
+            DateCreated = DateTime.Now;
+        }
+
+        public Topic(string name)
+        {
+            Name = name;
+
             DateCreated = DateTime.Now;
         }
     }
