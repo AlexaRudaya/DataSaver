@@ -33,5 +33,16 @@ namespace DataSaver.ApplicationCore.Entities
         {
             DateCreated = DateTime.Now;
         }
+
+        public Link(int categoryId, int topicId, string? name, 
+            string? description, string? urlLink)
+        {
+            DateCreated = DateTime.Now;
+            Name = name;
+            Description = description;
+            UrlLink = urlLink;
+            CategoryId = categoryId;
+            TopicId = topicId;
+        }
     }
 }

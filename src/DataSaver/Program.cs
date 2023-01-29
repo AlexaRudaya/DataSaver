@@ -1,7 +1,16 @@
+using DataSaver.ApplicationCore.Interfaces.IRepository;
+using DataSaver.Infrastructure.Mapper;
+using DataSaver.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddScoped<ILinkRepository, LinkRepository>();
+//builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+//builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddAutoMapper(typeof(MapperProfile));
 
 var app = builder.Build();
 
