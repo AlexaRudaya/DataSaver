@@ -6,45 +6,47 @@ namespace DataSaver.Infrastructure.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        private readonly LinkContext _linkContext;
+        private readonly LinkContext _dbContext;
 
-        private readonly DbSet<T> _dbSet;
+        private readonly DbSet<T> _table;  // separate table
 
-        public BaseRepository(LinkContext linkContext)
+        public BaseRepository(LinkContext dbContext)
         {
-            _linkContext = linkContext;
-            _dbSet = _linkContext.Set<T>();
+            _dbContext = dbContext;
+            _table = _dbContext.Set<T>();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _table.ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
         {
-            return await _dbSet.FindAsync(id);
+            return await _table.FindAsync(id);
         }
 
         public async Task CreateAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
+            await _table.AddAsync(entity);
+
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(T entity)
         {
-            var item = await _dbSet.FindAsync(id);
-            _dbSet.Remove(item);
+            _table.Remove(entity);
+
+            await _dbContext.SaveChangesAsync();
         }
 
-        public void UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
-            _linkContext.Entry(entity).State = EntityState.Modified;
-        }
+            _dbContext.Update(entity);
 
-        public async Task SaveChangesAsync()
-        {
-            await _linkContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
+
+            return entity;
         }
     }
 }
