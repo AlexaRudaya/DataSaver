@@ -8,10 +8,8 @@
 
         public Task CreateAsync(T entity);
 
-        public void UpdateAsync(T entity);
+        public Task<T> UpdateAsync(T entity);
 
-        public Task DeleteAsync(int id);
-
-        public Task SaveChangesAsync();
+        public Task DeleteAsync(T entity);
     }
 }
