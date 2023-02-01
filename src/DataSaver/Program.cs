@@ -1,9 +1,5 @@
-using DataSaver.ApplicationCore.Interfaces.IRepository;
-using DataSaver.ApplicationCore.Interfaces.IService;
+using DataSaver.Configuration;
 using DataSaver.Infrastructure.Data;
-using DataSaver.Infrastructure.Mapper;
-using DataSaver.Infrastructure.Repositories;
-using DataSaver.Infrastructure.Services;
 using DataSaver.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,12 +9,7 @@ Dependencies.ConfigureServices(builder.Configuration, builder.Services);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
-builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-builder.Services.AddScoped<ILinkService, LinkService>();
-builder.Services.AddScoped<ITopicService, TopicService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddAutoMapper(typeof(MapperProfile));
+builder.Services.AddCoreServices();
 
 var app = builder.Build();
 
