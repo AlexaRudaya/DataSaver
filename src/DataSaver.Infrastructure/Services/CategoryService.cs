@@ -1,22 +1,18 @@
-﻿using AutoMapper;
-using DataSaver.ApplicationCore.Entities;
-using DataSaver.ApplicationCore.Exceptions;
-using DataSaver.ApplicationCore.Interfaces.IRepository;
-using DataSaver.ApplicationCore.Interfaces.IService;
-using DataSaver.ApplicationCore.ViewModels;
-
-namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.Infrastructure.Services
 {
     public sealed class CategoryService : ICategoryService  
     {
         private readonly IBaseRepository<Category> _baseRepository;
         private readonly IMapper _mapper;
+        //private readonly IAppLogger<CategoryService> _logger;
+        private readonly ILogger<CategoryService> _logger;
 
         public CategoryService(IBaseRepository<Category> baseRepository,
-            IMapper mapper)
+            IMapper mapper, ILogger<CategoryService> logger)
         {
             _baseRepository = baseRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<CategoryViewModel> CreateAsync(CategoryViewModel categoryViewModel)
@@ -43,8 +39,10 @@ namespace DataSaver.Infrastructure.Services
 
             if (categoryList == null)
             {
-                string errorMessage = $"No categories were found";
-                throw new CategoryNotFoundException(errorMessage);
+                var exception = new CategoryNotFoundException("No categories were found");
+                _logger.LogError(exception, exception.Message);
+
+                throw exception;
             }
 
             var categoriesViewModelList = _mapper.Map<IEnumerable<CategoryViewModel>>(categoryList);
@@ -58,8 +56,10 @@ namespace DataSaver.Infrastructure.Services
 
             if (entity == null)
             {
-                string errorMessage = $"No category with id: {categoryId} was found";
-                throw new CategoryNotFoundException(errorMessage);
+                var exception = new CategoryNotFoundException($"No category with id: {categoryId} was found");
+                _logger.LogError(exception, exception.Message);
+
+                throw exception;
             }
 
             var categoryViewModel = _mapper.Map<CategoryViewModel>(entity);

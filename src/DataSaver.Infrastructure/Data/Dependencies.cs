@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace DataSaver.Infrastructure.Data
+﻿namespace DataSaver.Infrastructure.Data
 {
     public sealed class Dependencies
     {

@@ -1,12 +1,9 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using DataSaver.Models;
-
-namespace DataSaver.Controllers;
+﻿namespace DataSaver.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    
 
     public HomeController(ILogger<HomeController> logger)
     {
@@ -15,6 +12,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        _logger.LogInformation("Index method here");
         return View();
     }
 

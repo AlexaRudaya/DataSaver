@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-
-namespace DataSaver.ApplicationCore.ViewModels
+﻿namespace DataSaver.ApplicationCore.ViewModels
 {
     public sealed class LinkForCreateViewModel
     {

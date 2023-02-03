@@ -1,11 +1,6 @@
-﻿using DataSaver.ApplicationCore.Interfaces.ILogger;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Serilog;
-
-namespace DataSaver.Infrastructure.Logger
+﻿namespace DataSaver.Infrastructure.Logger
 {
-    public sealed class LoggerAdapter<T> : IAppLogger<T>
+    public sealed class LoggerAdapter<T> : IAppLogger<T> // mb I'll remove it later
     {
         private readonly ILogger<T> _logger;
 
@@ -13,10 +8,9 @@ namespace DataSaver.Infrastructure.Logger
         {
             var logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
-                .Enrich.FromLogContext()
                 .CreateLogger();
 
-            _logger = loggerFactory.CreateLogger<T>();
+            _logger = loggerFactory.AddSerilog(logger).CreateLogger<T>();
         }
 
         public void LogError(Exception exception, string? message, params object[] args)

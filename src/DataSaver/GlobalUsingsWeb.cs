@@ -1,0 +1,14 @@
+﻿global using DataSaver.ApplicationCore.Interfaces.IRepository;
+global using DataSaver.ApplicationCore.Interfaces.IService;
+global using DataSaver.Infrastructure.Mapper;
+global using DataSaver.Infrastructure.Repositories;
+global using DataSaver.Infrastructure.Services;
+global using DataSaver.Middlewares;
+global using DataSaver.Configuration;
+global using DataSaver.Infrastructure.Data;
+global using Serilog;
+global using Microsoft.AspNetCore.Mvc;
+global using System.Net;
+global using System.Text.Json;
+global using System.Diagnostics;
+global using DataSaver.Models;

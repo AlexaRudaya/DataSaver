@@ -1,8 +1,4 @@
-﻿using DataSaver.ApplicationCore.Entities;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DataSaver.ApplicationCore.ViewModels
+﻿namespace DataSaver.ApplicationCore.ViewModels
 {
     public sealed class LinkViewModel
     {

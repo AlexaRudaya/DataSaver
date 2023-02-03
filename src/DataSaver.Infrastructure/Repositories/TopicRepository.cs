@@ -1,8 +1,4 @@
-﻿using DataSaver.ApplicationCore.Entities;
-using DataSaver.ApplicationCore.Interfaces.IRepository;
-using DataSaver.Infrastructure.Data;
-
-namespace DataSaver.Infrastructure.Repositories
+﻿namespace DataSaver.Infrastructure.Repositories
 {
     public sealed class TopicRepository : BaseRepository<Topic>, ITopicRepository
     {

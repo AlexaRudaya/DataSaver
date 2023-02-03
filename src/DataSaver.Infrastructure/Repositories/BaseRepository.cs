@@ -1,8 +1,4 @@
-﻿using DataSaver.ApplicationCore.Interfaces.IRepository;
-using DataSaver.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-
-namespace DataSaver.Infrastructure.Repositories
+﻿namespace DataSaver.Infrastructure.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
