@@ -1,12 +1,8 @@
-﻿using DataSaver.ApplicationCore.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
-namespace DataSaver.Infrastructure.Data
+﻿namespace DataSaver.Infrastructure.Data
 {
     public sealed class LinkContextSeed
     {
-        public static async Task SeedAsync(LinkContext linkContext, ILogger logger, int retry = 0)
+        public static async Task SeedAsync(LinkContext linkContext, ILogger<LinkContextSeed> logger, int retry = 0)
         {
             var retryForAvailability = retry;
 
@@ -44,8 +40,6 @@ namespace DataSaver.Infrastructure.Data
                 logger.LogError(ex.Message);
 
                 await SeedAsync(linkContext, logger, retryForAvailability);
-
-
             }
         }
 

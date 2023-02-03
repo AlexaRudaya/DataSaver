@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace DataSaver.ApplicationCore.Entities
+﻿namespace DataSaver.ApplicationCore.Entities
 {
     public sealed class Topic
     {

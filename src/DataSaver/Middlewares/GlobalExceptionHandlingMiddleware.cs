@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Text.Json;
-
-namespace DataSaver.Middlewares
+﻿namespace DataSaver.Middlewares
 {
     public sealed class GlobalExceptionHandlingMiddleware : IMiddleware
     {
@@ -34,13 +30,12 @@ namespace DataSaver.Middlewares
                     Detail = "An internal server has occured"
                 };
 
-                string json = JsonSerializer.Serialize(problem);  
+                string json = JsonSerializer.Serialize(problem);
 
                 await context.Response.WriteAsync(json);
 
-                context.Response.ContentType= "application/json";
-
-            } 
+                context.Response.ContentType = "application/json";
+            }
         }
     }
 }

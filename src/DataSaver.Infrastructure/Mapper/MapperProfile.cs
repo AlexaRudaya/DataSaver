@@ -1,7 +1,4 @@
-﻿using DataSaver.ApplicationCore.Entities;
-using DataSaver.ApplicationCore.ViewModels;
-
-namespace DataSaver.Infrastructure.Mapper
+﻿namespace DataSaver.Infrastructure.Mapper
 {
     public sealed class MapperProfile : AutoMapper.Profile
     {

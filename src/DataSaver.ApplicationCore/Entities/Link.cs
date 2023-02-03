@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace DataSaver.ApplicationCore.Entities
+﻿namespace DataSaver.ApplicationCore.Entities
 {
     public sealed class Link
     {

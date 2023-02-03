@@ -1,8 +1,10 @@
-using DataSaver.Configuration;
-using DataSaver.Infrastructure.Data;
-using DataSaver.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+var logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+//builder.Services.AddSingleton(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
 
 Dependencies.ConfigureServices(builder.Configuration, builder.Services);
 

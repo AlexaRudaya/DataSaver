@@ -1,22 +1,17 @@
-﻿using AutoMapper;
-using DataSaver.ApplicationCore.Entities;
-using DataSaver.ApplicationCore.Exceptions;
-using DataSaver.ApplicationCore.Interfaces.IRepository;
-using DataSaver.ApplicationCore.Interfaces.IService;
-using DataSaver.ApplicationCore.ViewModels;
-
-namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.Infrastructure.Services
 {
     public sealed class TopicService : ITopicService
     {
         private readonly IBaseRepository<Topic> _baseRepository;
         private readonly IMapper _mapper;
+        //private readonly IAppLogger<TopicService> _logger;
 
         public TopicService(IBaseRepository<Topic> baseRepository,
-            IMapper mapper)
+            IMapper mapper/*, IAppLogger<TopicService> logger*/)
         {
             _baseRepository = baseRepository;
             _mapper = mapper;
+            //_logger = logger;
         }
 
         public async Task<TopicViewModel> CreateAsync(TopicViewModel topicViewModel)
@@ -43,8 +38,10 @@ namespace DataSaver.Infrastructure.Services
 
             if (topicsList == null)
             {
-                string errorMessage = "No topics were found";
-                throw new TopicNotFoundException(errorMessage);
+                var exception = new TopicNotFoundException("No topics were found");
+                //_logger.LogError(exception, exception.Message);
+
+                throw exception;
             }
 
             var topicsViewModelList = _mapper.Map<IEnumerable<TopicViewModel>>(topicsList);
@@ -58,8 +55,10 @@ namespace DataSaver.Infrastructure.Services
 
             if (entity == null)
             {
-                string errorMessage = $"No topic with id: {topicId} was found";
-                throw new TopicNotFoundException(errorMessage);
+                var exception = new TopicNotFoundException($"No topic with id: {topicId} was found");
+                //_logger.LogError(exception, exception.Message);
+
+                throw exception;
             }
 
             var topicViewModel = _mapper.Map<TopicViewModel>(entity);

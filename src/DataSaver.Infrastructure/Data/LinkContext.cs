@@ -1,7 +1,4 @@
-﻿using DataSaver.ApplicationCore.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace DataSaver.Infrastructure.Data
+﻿namespace DataSaver.Infrastructure.Data
 {
     public sealed class LinkContext : DbContext
     {

@@ -1,22 +1,17 @@
-﻿using AutoMapper;
-using DataSaver.ApplicationCore.Entities;
-using DataSaver.ApplicationCore.Exceptions;
-using DataSaver.ApplicationCore.Interfaces.IRepository;
-using DataSaver.ApplicationCore.Interfaces.IService;
-using DataSaver.ApplicationCore.ViewModels;
-
-namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {
         private readonly IBaseRepository<Link> _baseRepository;
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
+        //private readonly IAppLogger<LinkService> _logger;
 
         public LinkService(IBaseRepository<Link> baseRepository,
-                IMapper mapper)
+                IMapper mapper/*, IAppLogger<LinkService> logger*/)
         {
             _baseRepository = baseRepository;
             _mapper = mapper;
+            //_logger = logger;
         }
 
         public async Task<LinkViewModel> CreateAsync(LinkViewModel linkViewModel)
@@ -42,8 +37,10 @@ namespace DataSaver.Infrastructure.Services
 
             if (linksList == null)
             {
-                string errorMessage = $"No links were found";
-                throw new LinkNotFoundException(errorMessage);
+                var exception = new LinkNotFoundException("No links were found");
+                //_logger.LogError(exception, exception.Message);
+
+                throw exception;
             }
 
             var linksViewModelList = _mapper.Map<IEnumerable<LinkViewModel>>(linksList);
@@ -57,8 +54,10 @@ namespace DataSaver.Infrastructure.Services
 
             if (entity == null) 
             {
-                string errorMessage = $"No link with id: {linkId} was found";
-                throw new LinkNotFoundException(errorMessage);
+                var exception = new LinkNotFoundException($"No link with id: {linkId} was found");
+                //_logger.LogError(exception, exception.Message);
+
+                throw exception;
             }
 
             var linkViewModel = _mapper.Map<LinkViewModel>(entity);
