@@ -12,14 +12,11 @@
 
         public Category()
         {
-            DateCreated = DateTime.Now;
         }
 
         public Category(string name)
         {
             Name = name;
-
-            DateCreated = DateTime.Now;
         }
     }
 }

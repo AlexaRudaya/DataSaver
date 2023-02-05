@@ -16,19 +16,18 @@
         [Required]
         public string? UrlLink { get; set; }
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]
         public Category? Category { get; set; }
 
-        public int TopicId { get; set; }
+        public int? TopicId { get; set; }
 
         [ForeignKey("TopicId")]
         public Topic? Topic { get; set; }
 
         public Link()
         {
-            DateCreated = DateTime.Now;
         }
 
         public Link(int categoryId, int topicId, string? name, 
@@ -36,7 +35,6 @@
         {
             CategoryId = categoryId;
             TopicId = topicId;
-            DateCreated = DateTime.Now;
             Name = name;
             Description = description;
             UrlLink = urlLink;

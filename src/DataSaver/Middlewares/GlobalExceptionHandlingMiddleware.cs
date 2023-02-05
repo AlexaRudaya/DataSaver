@@ -15,6 +15,28 @@
             {
                 await next(context);
             }
+            catch (Exception ex) when (ex is CategoryNotFoundException ||
+                              ex is LinkNotFoundException ||
+                              ex is TopicNotFoundException)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                context.Response.StatusCode =
+                    (int)HttpStatusCode.NotFound;
+
+                ProblemDetails problem = new()
+                {
+                    Status = (int)HttpStatusCode.NotFound,
+                    Title = "Not found error",
+                    Detail = "A not found error has occured"
+                };
+
+                string json = JsonSerializer.Serialize(problem);
+
+                await context.Response.WriteAsync(json);
+
+                context.Response.ContentType = "application/json";
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
@@ -25,9 +47,8 @@
                 ProblemDetails problem = new()
                 {
                     Status = (int)HttpStatusCode.InternalServerError,
-                    Type = "Server error",
                     Title = "Server error",
-                    Detail = "An internal server has occured"
+                    Detail = "An internal server error has occured"
                 };
 
                 string json = JsonSerializer.Serialize(problem);
