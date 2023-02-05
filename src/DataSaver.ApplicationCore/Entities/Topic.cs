@@ -12,14 +12,11 @@
 
         public Topic()
         {
-            DateCreated = DateTime.Now;
         }
 
         public Topic(string name)
         {
             Name = name;
-
-            DateCreated = DateTime.Now;
         }
     }
 }

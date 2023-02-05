@@ -2,20 +2,18 @@
 {
     public sealed class LinkContextSeed
     {
+        private readonly ILogger<LinkContextSeed> _logger;  
+
+        public LinkContextSeed(ILogger<LinkContextSeed> logger)
+        {
+            _logger = logger;    
+        }
         public static async Task SeedAsync(LinkContext linkContext, ILogger<LinkContextSeed> logger, int retry = 0)
         {
             var retryForAvailability = retry;
 
             try
             {
-                if (!await linkContext.Links.AnyAsync())
-                {
-                    await linkContext.AddRangeAsync(
-                        GetPreConfiguredLinks());
-
-                    await linkContext.SaveChangesAsync();
-                }
-
                 if (!await linkContext.Topics.AnyAsync())
                 {
                     await linkContext.AddRangeAsync(
@@ -28,6 +26,14 @@
                 {
                     await linkContext.AddRangeAsync(
                         GetPreConfiguredCategories());
+
+                    await linkContext.SaveChangesAsync();
+                }
+
+                if (!await linkContext.Links.AnyAsync())
+                {
+                    await linkContext.AddRangeAsync(
+                        GetPreConfiguredLinks());
 
                     await linkContext.SaveChangesAsync();
                 }

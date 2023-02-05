@@ -4,19 +4,21 @@
     {
         private readonly IBaseRepository<Link> _baseRepository;
         private readonly IMapper _mapper;
-        //private readonly IAppLogger<LinkService> _logger;
+        private readonly ILogger<LinkService> _logger;
 
         public LinkService(IBaseRepository<Link> baseRepository,
-                IMapper mapper/*, IAppLogger<LinkService> logger*/)
+                IMapper mapper, ILogger<LinkService> logger)
         {
             _baseRepository = baseRepository;
             _mapper = mapper;
-            //_logger = logger;
+            _logger = logger;
         }
 
         public async Task<LinkViewModel> CreateAsync(LinkViewModel linkViewModel)
         {
             var link = _mapper.Map<Link>(linkViewModel);
+
+            link.DateCreated = DateTime.Now; 
 
             await _baseRepository.CreateAsync(link);
 
@@ -38,7 +40,7 @@
             if (linksList == null)
             {
                 var exception = new LinkNotFoundException("No links were found");
-                //_logger.LogError(exception, exception.Message);
+                _logger.LogError(exception, exception.Message);
 
                 throw exception;
             }
@@ -55,7 +57,7 @@
             if (entity == null) 
             {
                 var exception = new LinkNotFoundException($"No link with id: {linkId} was found");
-                //_logger.LogError(exception, exception.Message);
+                _logger.LogError(exception, exception.Message);
 
                 throw exception;
             }
@@ -68,6 +70,11 @@
         public async Task<LinkViewModel> UpdateAsync(LinkViewModel linkViewModel)
         {
             var link = _mapper.Map<Link>(linkViewModel);
+
+            var modelFromDb = await _baseRepository.GetByIdAsync(link.Id);
+            var modelFromDbCreated = modelFromDb!.DateCreated;
+            link.DateCreated = modelFromDbCreated;
+
             await _baseRepository.UpdateAsync(link);
 
             return linkViewModel;

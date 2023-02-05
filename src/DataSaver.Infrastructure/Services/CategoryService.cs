@@ -4,7 +4,6 @@
     {
         private readonly IBaseRepository<Category> _baseRepository;
         private readonly IMapper _mapper;
-        //private readonly IAppLogger<CategoryService> _logger;
         private readonly ILogger<CategoryService> _logger;
 
         public CategoryService(IBaseRepository<Category> baseRepository,
@@ -18,6 +17,8 @@
         public async Task<CategoryViewModel> CreateAsync(CategoryViewModel categoryViewModel)
         {
             var category = _mapper.Map<Category>(categoryViewModel);
+
+            category.DateCreated = DateTime.Now;
 
             await _baseRepository.CreateAsync(category);
 
@@ -70,6 +71,11 @@
         public async Task<CategoryViewModel> UpdateAsync(CategoryViewModel categoryViewModel)
         {
             var category = _mapper.Map<Category>(categoryViewModel);
+
+            var modelFromDb = await _baseRepository.GetByIdAsync(category.Id);
+            var modelFromDbCreated = modelFromDb!.DateCreated;
+            category.DateCreated = modelFromDbCreated;
+
             await _baseRepository.UpdateAsync(category);
 
             return categoryViewModel;
