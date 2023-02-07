@@ -2,7 +2,7 @@
 {
     public sealed class CategoryViewModel
     {
-        public Guid CategoryId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string? Name { get; set; }

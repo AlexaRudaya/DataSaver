@@ -2,7 +2,7 @@
 {
     public sealed class LinkViewModel
     {
-        public Guid LinkId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string? Name { get; set; }

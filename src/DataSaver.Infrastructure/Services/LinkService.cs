@@ -3,13 +3,19 @@
     public sealed class LinkService : ILinkService
     {
         private readonly IBaseRepository<Link> _baseRepository;
+        private readonly IBaseRepository<Category> _categoryRepository;
+        private readonly IBaseRepository<Topic> _topicRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<LinkService> _logger;
 
         public LinkService(IBaseRepository<Link> baseRepository,
+                IBaseRepository<Category> categoryRepository,
+                IBaseRepository<Topic> topicRepository,
                 IMapper mapper, ILogger<LinkService> logger)
         {
             _baseRepository = baseRepository;
+            _categoryRepository = categoryRepository;
+            _topicRepository = topicRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -35,7 +41,10 @@
 
         public async Task<IEnumerable<LinkViewModel>> GetAllAsync()
         {
-            var linksList = await _baseRepository.GetAllAsync();
+            var linksList = await _baseRepository.GetAllAsync(
+                include:query => query     //lazy loading
+                    .Include(_=>_.Category!)
+                    .Include(_=>_.Topic!));
 
             if (linksList == null)
             {
@@ -63,6 +72,12 @@
             }
 
             var linkViewModel = _mapper.Map<LinkViewModel>(entity);
+
+            var category = await _categoryRepository.GetByIdAsync(linkViewModel.CategoryId);
+            var topic = await _topicRepository.GetByIdAsync(linkViewModel.TopicId);
+
+            linkViewModel.Category = category;
+            linkViewModel.Topic = topic;
 
             return linkViewModel;   
         }

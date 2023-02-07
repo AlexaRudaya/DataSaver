@@ -1,6 +1,8 @@
-﻿namespace DataSaver.Infrastructure.Repositories
+﻿using Microsoft.EntityFrameworkCore.Query;
+
+namespace DataSaver.Infrastructure.Repositories
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
     {
         private readonly LinkContext _dbContext;
 
@@ -12,14 +14,21 @@
             _table = _dbContext.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
         {
-            return await _table.ToListAsync();
+            IQueryable <T> query = _table;
+
+            if (include is not null)
+            {
+                query = include(query);
+            }
+
+            return await query.AsNoTracking().ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
         {
-            return await _table.FindAsync(id);
+            return await _table.AsNoTracking().FirstAsync(_=>_.Id.Equals(id));
         }
 
         public async Task CreateAsync(T entity)

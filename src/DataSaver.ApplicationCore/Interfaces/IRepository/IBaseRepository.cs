@@ -1,8 +1,10 @@
-﻿namespace DataSaver.ApplicationCore.Interfaces.IRepository
+﻿using Microsoft.EntityFrameworkCore.Query;
+
+namespace DataSaver.ApplicationCore.Interfaces.IRepository
 {
-    public interface IBaseRepository<T> where T : class
+    public interface IBaseRepository<T> where T : BaseModel
     {
-        public Task<IEnumerable<T>> GetAllAsync();
+        public Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
 
         Task<T?> GetByIdAsync(int id);
 
