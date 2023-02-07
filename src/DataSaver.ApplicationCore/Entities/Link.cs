@@ -1,10 +1,7 @@
 ﻿namespace DataSaver.ApplicationCore.Entities
 {
-    public sealed class Link
+    public sealed class Link : BaseModel
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         public string? Name { get; set; }
 

@@ -1,10 +1,7 @@
 ﻿namespace DataSaver.ApplicationCore.Entities
 {
-    public sealed class Topic
+    public sealed class Topic : BaseModel
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         public string? Name { get; set; }
 
