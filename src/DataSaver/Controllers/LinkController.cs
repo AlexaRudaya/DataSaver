@@ -148,7 +148,6 @@
             await _linkService.DeleteAsync(linkToRemove);
 
             return RedirectToAction("Index");
-
         }
     }
 }
