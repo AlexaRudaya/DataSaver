@@ -44,11 +44,9 @@
                         <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id" class="btn btn-outline-dark">
                             Edit
                         </a>
-                        <form method="post" asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id">
-                            <button type="submit" class="btn btn-outline-danger">
-                                Delete
-                            </button>
-                        </form>
+                      <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id" class="btn btn-outline-danger">
+                            Delete
+                      </a>
                   </div> 
                 </td>
             </tr>
