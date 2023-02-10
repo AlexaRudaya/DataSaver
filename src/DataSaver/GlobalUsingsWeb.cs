@@ -8,7 +8,6 @@ global using DataSaver.Configuration;
 global using DataSaver.Infrastructure.Data;
 global using Microsoft.AspNetCore.Mvc;
 global using System.Net;
-global using System.Text.Json;
 global using System.Diagnostics;
 global using DataSaver.Models;
 global using DataSaver.ApplicationCore.Exceptions;

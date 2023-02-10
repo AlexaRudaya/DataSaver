@@ -1,4 +1,6 @@
-﻿namespace DataSaver.Controllers
+﻿using Newtonsoft.Json;
+
+namespace DataSaver.Controllers
 {
     public class LinkController : Controller
     {
@@ -19,13 +21,68 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? response)
         {
-            _logger.LogInformation("Here we get the list of the links");
+            FilterViewModel filter = new();
 
-            var linksList = await _linkService.GetAllAsync();
+            if (response is null)
+            {
+                var categories = await _categoryService.GetAllAsync();
+                var topics = await _topicService.GetAllAsync();
 
-            return View(linksList);
+                filter.Links = await _linkService.GetAllAsync();
+
+                filter.Categories = categories.Select(_ => new SelectListItem
+                {
+                    Value = _.Id.ToString(),
+                    Text = _.Name
+                });
+
+                filter.Topics = topics.Select(_ => new SelectListItem
+                {
+                    Value = _.Id.ToString(),
+                    Text = _.Name
+                });
+            }
+            else
+            {
+                filter = JsonConvert.DeserializeObject<FilterViewModel>(response)!;
+
+                var categories = await _categoryService.GetAllAsync();
+                var topics = await _topicService.GetAllAsync();
+                var allLinks = await _linkService.GetAllAsync();
+
+                filter.Links = allLinks.Where(_=>_.CategoryId.Equals(filter.CategoryId)
+                    && _.TopicId.Equals(filter.TopicId));
+
+                filter.Categories = categories.Select(_ => new SelectListItem
+                {
+                    Value = _.Id.ToString(),
+                    Text = _.Name
+                });
+
+                filter.Topics = topics.Select(_ => new SelectListItem
+                {
+                    Value = _.Id.ToString(),
+                    Text = _.Name
+                });
+
+            }
+            return View(filter);
+        }
+
+        [HttpPost]
+        public IActionResult Index(FilterViewModel filter)
+        {
+            ResponseViewModel responseViewModel = new()
+            { 
+                CategoryId = filter.CategoryId,
+                TopicId = filter.TopicId,
+            };
+
+            string response = JsonConvert.SerializeObject(responseViewModel);
+
+            return RedirectToAction(nameof(Index), new {Response = response });
         }
 
         [HttpGet]

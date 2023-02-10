@@ -1,6 +1,7 @@
 ﻿@using DataSaver.ApplicationCore.ViewModels
-@model IEnumerable<LinkViewModel>
+@model FilterViewModel
 
+<form asp-controller="Link" asp-action="Index">
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
@@ -18,7 +19,19 @@
 <br />
 <br />
 
-@if (Model.Count() > 0)
+    <select asp-for="CategoryId" asp-items="Model.Categories">
+        <option value="">All Categories</option>
+    </select>
+    <select asp-for="TopicId" asp-items="Model.Topics">
+        <option value="">All Types</option>
+    </select>
+    <input type="submit" value="Filter"/>
+                <a asp-controller="Link" asp-action="Index" class="btn btn-info">
+                Reset filter
+                <i class="fas fa-plus"></i>
+            </a>
+
+@if (Model.Links!.Count() > 0)
 {
     <table class="table table-hover table-bordered table-striped">
         <thead>
@@ -31,7 +44,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Links!)
             {
              <tr>
                 <th scope="row">@item.Name</th>
@@ -59,3 +72,4 @@ else
 {
 <p>Category list is empty</p>
 }
+</form>

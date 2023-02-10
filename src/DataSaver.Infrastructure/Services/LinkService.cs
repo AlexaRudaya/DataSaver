@@ -1,4 +1,6 @@
-﻿namespace DataSaver.Infrastructure.Services
+﻿using System;
+
+namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {

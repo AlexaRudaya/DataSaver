@@ -51,6 +51,11 @@
             return categoriesViewModelList;
         }
 
+        public Task<IEnumerable<CategoryViewModel>> GetAllWithFiltersAsync(int? categoryId, int? topicId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<CategoryViewModel> GetByIdAsync(int categoryId)
         {
             var entity = await _baseRepository.GetByIdAsync(categoryId);
