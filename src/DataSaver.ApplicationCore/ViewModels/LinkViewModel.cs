@@ -20,5 +20,6 @@
         [Display(Name = "Topic")] public int TopicId { get; set; }
 
         public Topic? Topic { get; set; }
+
     }
 }

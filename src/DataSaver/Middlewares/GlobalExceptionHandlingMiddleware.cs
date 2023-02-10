@@ -1,4 +1,6 @@
-﻿namespace DataSaver.Middlewares
+﻿using System.Text.Json;
+
+namespace DataSaver.Middlewares
 {
     public sealed class GlobalExceptionHandlingMiddleware : IMiddleware
     {
