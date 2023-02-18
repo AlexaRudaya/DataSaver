@@ -8,9 +8,9 @@
 
         public IEnumerable<SelectListItem>? Topics { get; set; }
 
-        public int CategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
-        public int TopicId { get; set; }
+        public int? TopicId { get; set; }
 
         public FilterViewModel()
         {

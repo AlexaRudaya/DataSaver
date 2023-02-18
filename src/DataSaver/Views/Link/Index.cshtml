@@ -2,74 +2,85 @@
 @model FilterViewModel
 
 <form asp-controller="Link" asp-action="Index">
-<div class="container p-3">
-    <div class="row pt-4">
-        <div class="col-6">
-            <h4>Here you can find all of your links</h4>
-        </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Link" asp-action="CreateLink" class="btn btn-info">
-                Create a link
-                <i class="fas fa-plus"></i>
-            </a>
-        </div>
-    </div>
-</div>
-
-<br />
-<br />
-
-    <select asp-for="CategoryId" asp-items="Model.Categories">
-        <option value="">All Categories</option>
-    </select>
-    <select asp-for="TopicId" asp-items="Model.Topics">
-        <option value="">All Types</option>
-    </select>
-    <input type="submit" value="Filter"/>
-                <a asp-controller="Link" asp-action="Index" class="btn btn-info">
-                Reset filter
-                <i class="fas fa-plus"></i>
-            </a>
-
-@if (Model.Links!.Count() > 0)
-{
-    <table class="table table-hover table-bordered table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Link</th>
-                <th scope="col">Category</th>
-                <th scope="col">What is it about?</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Links!)
-            {
-             <tr>
-                <th scope="row">@item.Name</th>
-                <td>@item.Description</td>
-                <td><a href=@item.UrlLink>@item.UrlLink</a></td>
-                <td>@item.Category!.Name</td>
-                <td>@item.Topic!.Name</td>
-                <td>
-                  <div class="btn-group">
-                        <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id" class="btn btn-outline-dark">
-                            Edit
+        <div class="container p-3">
+            <div class="row">
+                <div class="col-6">
+                    <p></p>
+                    <h4><strong>Here you can find all of your links</strong></h4>
+                </div>
+                <div class="col-6">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-controller="Link" asp-action="CreateLink" class="btn btn-primary">
+                            Create a link
+                            <i class="fas fa-plus"></i>
                         </a>
-                      <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id" class="btn btn-outline-danger">
-                            Delete
-                      </a>
-                  </div> 
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-}
+                    </div>   
+                </div>
+            </div>
+        </div>
 
-else
-{
-<p>Category list is empty</p>
-}
+        <div class="container p-3">
+            <select asp-for="CategoryId" button type="button" class="btn btn-outline-dark" asp-items="Model.Categories">
+            <option value="">All Categories</option>
+        </select>
+        
+            <select asp-for="TopicId" button type="button" class="btn btn-outline-dark" asp-items="Model.Topics">
+            <option value="">All Types</option>
+        </select>
+            <input type="submit" class="btn btn-outline-dark btn-sm" value="Filter" />
+        </div>
+
+        <br />
+
+        <section class="intro">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        @if (Model.Links!.Count() > 0)
+                        {
+                            <table class="table table-dark mb-0 ">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Link</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Topic</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Links!)
+                                    {
+                                        <tr>
+                                            <th scope="row">@item.Name</th>
+                                            <td>@item.Description</td>
+                                            <td><a href=@item.UrlLink>@item.UrlLink</a></td>
+                                            <td>@item.Category!.Name</td>
+                                            <td>@item.Topic!.Name</td>
+                                            <td class="align-top">
+                                                <div class="btn-group">
+                                                    <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id" class="btn btn-outline-info">
+                                                        Edit
+                                                    </a>
+                                                    <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id" class="btn btn-outline-danger">
+                                                        Dele
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    }
+                                </tbody>
+                            </table>
+
+                        }
+                        else
+                        {
+                            <p>Category list is empty</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
 </form>

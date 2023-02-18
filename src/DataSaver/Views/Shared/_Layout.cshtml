@@ -4,18 +4,89 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - DataSaver</title>
-    <link rel="stylesheet" href="~/css/StyleSheet.css" />
+
+    <link rel="stylesheet" href="~/assets/css/style-starter.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DataSaver.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link href="//fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&display=swap"
+          rel="stylesheet">
 </head>
-<body class="page light-theme">
+
+<body>
+    <div class="header-w3l">
+        <header id="site-header" class="fixed-top">
+            <div class="container">
+                <nav class="navbar navbar-expand-lg stroke">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        Data Saver
+                    </a>
+
+                    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                        <ul class="navbar-nav ml-lg-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Link" asp-action="Index">Links</a>
+                            </li>
+                            <li class="nav-item    ">
+                                <a class="nav-link" asp-area="" asp-controller="Category" asp-action="Index">Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Topic" asp-action="Index">Topics</a>
+                            </li>
+                            <li class="search-bar ml-lg-3 mr-lg-5 mt-lg-0 mt-4">
+                                <form class="search position-relative">
+                                    <input type="search" class="search__input" name="search" placeholder="Search here.."
+                                           onload="equalWidth()" required="">
+                                    <span class="fas fa-search search__icon"></span>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- toggle switch for light and dark theme -->
+                    <div class="mobile-position">
+                        <nav class="navigation">
+                            <div class="theme-switch-wrapper">
+                                <label class="theme-switch" for="checkbox">
+                                    <input type="checkbox" id="checkbox">
+                                    <div class="mode-container">
+                                        <i class="gg-sun"></i>
+                                        <i class="gg-moon"></i>
+                                    </div>
+                                </label>
+                            </div>
+                        </nav>
+                    </div>
+
+                    <!-- //toggle switch for light and dark theme -->
+                </nav>
+
+            </div>
+        </header>
+
+    </div>
+    <section class="w3l-team">
+        <div class="team py-5">
+
+
+            <div class="container py-lg-5 py-md-4 py-2">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    </section>
+
+
+@*<body class="page light-theme">
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">DataSaver</a>
                 <button class="theme" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-moon-stars" data-type="add"></i>
+                    <i class="bi bi-moon-stars" data-type="add">Theme</i>
                 </button>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -38,21 +109,14 @@
                 </div>
             </div>
         </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    </header>*@
 
-    <footer class="border-top footer text-muted">
-        @* <div class="container">
-        &copy; 2023 - DataSaver <a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
-        </div>*@
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/theme.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+<script src="~/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/assets/js/theme-change.js"></script>
+<script src="~/assets/js/bootstrap.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/theme.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

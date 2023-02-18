@@ -52,8 +52,24 @@ namespace DataSaver.Controllers
                 var topics = await _topicService.GetAllAsync();
                 var allLinks = await _linkService.GetAllAsync();
 
-                filter.Links = allLinks.Where(_=>_.CategoryId.Equals(filter.CategoryId)
-                    && _.TopicId.Equals(filter.TopicId));
+                var categoryLinks = allLinks;
+
+                if (filter.CategoryId is not null && filter.CategoryId != 0)
+                {
+                    categoryLinks = allLinks.Where(_ => _.CategoryId.Equals(filter.CategoryId));
+                }
+
+                var topicLinks = categoryLinks;
+
+                if (filter.TopicId is not null && filter.TopicId != 0)
+                {
+                    topicLinks = categoryLinks.Where(_ => _.TopicId.Equals(filter.TopicId));
+                }
+
+                filter.Links = topicLinks;
+
+                //filter.Links = allLinks.Where(_=>_.CategoryId.Equals(filter.CategoryId)
+                //    && _.TopicId.Equals(filter.TopicId));
 
                 filter.Categories = categories.Select(_ => new SelectListItem
                 {
