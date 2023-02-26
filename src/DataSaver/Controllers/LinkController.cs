@@ -20,6 +20,13 @@ namespace DataSaver.Controllers
             _logger = logger;
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> Index()
+        //{ 
+        //    var previews = await _linkService.GetLinkPreviewAsync();
+        //    return View(previews);
+        //}
+
         [HttpGet]
         public async Task<IActionResult> Index(string? response)
         {
@@ -82,8 +89,8 @@ namespace DataSaver.Controllers
                     Value = _.Id.ToString(),
                     Text = _.Name
                 });
-
             }
+
             return View(filter);
         }
 
@@ -91,14 +98,14 @@ namespace DataSaver.Controllers
         public IActionResult Index(FilterViewModel filter)
         {
             ResponseViewModel responseViewModel = new()
-            { 
+            {
                 CategoryId = filter.CategoryId,
                 TopicId = filter.TopicId,
             };
 
             string response = JsonConvert.SerializeObject(responseViewModel);
 
-            return RedirectToAction(nameof(Index), new {Response = response });
+            return RedirectToAction(nameof(Index), new { Response = response });
         }
 
         [HttpGet]
@@ -136,6 +143,8 @@ namespace DataSaver.Controllers
                 var linkViewModel = linkForCreateVM.LinkVM;
 
                 await _linkService.CreateAsync(linkViewModel!);
+
+                TempData[Constants.Success] = "You successfully created a new link";
 
                 return RedirectToAction("Index");
             }

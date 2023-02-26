@@ -13,6 +13,8 @@
         [Required]
         public string? Description { get; set; }
 
+        public LinkPreview? LinkPreview { get; set; }
+
         [Display(Name = "Category")] public int CategoryId { get; set; }
 
         public Category? Category { get; set; }
@@ -20,6 +22,11 @@
         [Display(Name = "Topic")] public int TopicId { get; set; }
 
         public Topic? Topic { get; set; }
+
+        public LinkViewModel()
+        {
+            LinkPreview = new();
+        }
 
     }
 }
