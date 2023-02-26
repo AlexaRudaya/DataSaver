@@ -1,4 +1,22 @@
 ﻿@using DataSaver.ApplicationCore.ViewModels
+
+@*@model IEnumerable<LinkPreview>
+@foreach (var result in Model)
+    {
+        if (result != null)
+        {
+            <li>
+                <h3>@result.Title</h3>
+                <img src="@result.Image" alt="@result.Title" />
+                <p>@result.Description</p>
+            </li>
+        }
+        else
+        {
+            <li>Unable to retrieve link preview</li>
+        }
+    }*@
+
 @model FilterViewModel
 
 <form asp-controller="Link" asp-action="Index">
@@ -18,7 +36,6 @@
                 </div>
             </div>
         </div>
-
         <div class="container p-3">
             <select asp-for="CategoryId" button type="button" class="btn btn-outline-dark" asp-items="Model.Categories">
             <option value="">All Categories</option>
@@ -27,12 +44,44 @@
             <select asp-for="TopicId" button type="button" class="btn btn-outline-dark" asp-items="Model.Topics">
             <option value="">All Types</option>
         </select>
-            <input type="submit" class="btn btn-outline-dark btn-sm" value="Filter" />
+            <input type="submit" class="btn btn-outline-dark btn-sm" value="Apply" />
         </div>
 
         <br />
 
-        <section class="intro">
+        @foreach (var item in Model.Links!)
+    {
+        <div class="card border-info mb-3" style="width: 60%;">
+            <div class="card-header bg-color-white bg-transparent border-info">
+                @item.Name
+            </div>
+            <div class="card-body">
+                @item.LinkPreview!.Title
+                <img src="@item.LinkPreview.Image" alt="@item.LinkPreview.Title" />
+
+                @item.Description
+
+                <dt class="col-3 text-end">
+                    Category
+                </dt>
+                <dd class="col-9">
+                       @item.Category!.Name
+                </dd>
+
+                <dt class="col-3 text-end">
+                    Topic
+                </dt>
+                <dd class="col-9">
+                    @item.Topic!.Name
+                </dd>
+            </div>
+            <div class="card-footer bg-color-white">
+            </div>
+        </div>
+    }
+    
+
+       @* <section class="intro">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12">
@@ -55,18 +104,16 @@
                                         <tr>
                                             <th scope="row">@item.Name</th>
                                             <td>@item.Description</td>
-                                            <td><a href=@item.UrlLink>@item.UrlLink</a></td>
+                                            <td><a href=@item.UrlLink target="_blank">@item.UrlLink</a></td>
                                             <td>@item.Category!.Name</td>
                                             <td>@item.Topic!.Name</td>
-                                            <td class="align-top">
-                                                <div class="btn-group">
-                                                    <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id" class="btn btn-outline-info">
-                                                        Edit
+                                            <td>
+                                                    <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id">
+                                                         <i class="fa-regular fa-pen-to-square fa-lg"></i>
                                                     </a>
-                                                    <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id" class="btn btn-outline-danger">
-                                                        Dele
-                                                    </a>
-                                                </div>
+                                                    <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id">
+                                                        <i class="fa-regular fa-trash-can fa-lg"></i>
+                                                     </a>
                                             </td>
                                         </tr>
 
@@ -82,5 +129,5 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section>*@
 </form>
