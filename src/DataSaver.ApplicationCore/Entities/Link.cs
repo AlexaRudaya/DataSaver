@@ -23,6 +23,10 @@
         [ForeignKey("TopicId")]
         public Topic? Topic { get; set; }
 
+        public string? PreviewImage { get; set; }
+
+        public string? PreviewTitle { get; set; }
+
         public Link()
         {
         }

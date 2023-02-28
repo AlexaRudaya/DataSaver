@@ -9,3 +9,4 @@ global using DataSaver.Infrastructure.Data;
 global using AutoMapper;
 global using DataSaver.ApplicationCore.Exceptions;
 global using DataSaver.ApplicationCore.Interfaces.IService;
+global using Newtonsoft.Json;
