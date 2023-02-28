@@ -2,14 +2,14 @@
 {
     public sealed class TopicService : ITopicService
     {
-        private readonly IBaseRepository<Topic> _baseRepository;
+        private readonly ITopicRepository _topicRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<TopicService> _logger;
 
-        public TopicService(IBaseRepository<Topic> baseRepository,
+        public TopicService(ITopicRepository topicRepository,
             IMapper mapper, ILogger<TopicService> logger)
         {
-            _baseRepository = baseRepository;
+            _topicRepository = topicRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -20,7 +20,7 @@
 
             topic.DateCreated = DateTime.Now;
             
-            await _baseRepository.CreateAsync(topic);
+            await _topicRepository.CreateAsync(topic);
 
             return topicViewModel;
         }
@@ -29,14 +29,14 @@
         {
             var topic = _mapper.Map<Topic>(topicViewModel);
 
-            await _baseRepository.DeleteAsync(topic);
+            await _topicRepository.DeleteAsync(topic);
 
             return topicViewModel;
         }
 
         public async Task<IEnumerable<TopicViewModel>> GetAllAsync()
         {
-            var topicsList = await _baseRepository.GetAllAsync();
+            var topicsList = await _topicRepository.GetAllAsync();
 
             if (topicsList == null)
             {
@@ -58,7 +58,7 @@
 
         public async Task<TopicViewModel> GetByIdAsync(int topicId)
         {
-            var entity = await _baseRepository.GetByIdAsync(topicId);
+            var entity = await _topicRepository.GetByIdAsync(topicId);
 
             if (entity == null)
             {
@@ -77,11 +77,11 @@
         {
             var topic = _mapper.Map<Topic>(topicViewModel);
 
-            var modelFromDb = await _baseRepository.GetByIdAsync(topic.Id);
+            var modelFromDb = await _topicRepository.GetByIdAsync(topic.Id);
             var modelFromDbCreated = modelFromDb!.DateCreated;
             topic.DateCreated = modelFromDbCreated;
 
-            await _baseRepository.UpdateAsync(topic);
+            await _topicRepository.UpdateAsync(topic);
 
             return topicViewModel;
         }

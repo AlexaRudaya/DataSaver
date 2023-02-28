@@ -2,14 +2,14 @@
 {
     public sealed class CategoryService : ICategoryService  
     {
-        private readonly IBaseRepository<Category> _baseRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<CategoryService> _logger;
 
-        public CategoryService(IBaseRepository<Category> baseRepository,
+        public CategoryService(ICategoryRepository categoryRepository,
             IMapper mapper, ILogger<CategoryService> logger)
         {
-            _baseRepository = baseRepository;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -20,7 +20,7 @@
 
             category.DateCreated = DateTime.Now;
 
-            await _baseRepository.CreateAsync(category);
+            await _categoryRepository.CreateAsync(category);
 
             return categoryViewModel;
         }
@@ -29,14 +29,14 @@
         {
             var category = _mapper.Map<Category>(categoryViewModel);
 
-            await _baseRepository.DeleteAsync(category);
+            await _categoryRepository.DeleteAsync(category);
 
             return categoryViewModel;
         }
 
         public async Task<IEnumerable<CategoryViewModel>> GetAllAsync()
         {
-            var categoryList = await _baseRepository.GetAllAsync();
+            var categoryList = await _categoryRepository.GetAllAsync();
 
             if (categoryList == null)
             {
@@ -58,7 +58,7 @@
 
         public async Task<CategoryViewModel> GetByIdAsync(int categoryId)
         {
-            var entity = await _baseRepository.GetByIdAsync(categoryId);
+            var entity = await _categoryRepository.GetByIdAsync(categoryId);
 
             if (entity == null)
             {
@@ -77,11 +77,11 @@
         {
             var category = _mapper.Map<Category>(categoryViewModel);
 
-            var modelFromDb = await _baseRepository.GetByIdAsync(category.Id);
+            var modelFromDb = await _categoryRepository.GetByIdAsync(category.Id);
             var modelFromDbCreated = modelFromDb!.DateCreated;
             category.DateCreated = modelFromDbCreated;
 
-            await _baseRepository.UpdateAsync(category);
+            await _categoryRepository.UpdateAsync(category);
 
             return categoryViewModel;
         }

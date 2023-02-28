@@ -1,22 +1,16 @@
-﻿using DataSaver.ApplicationCore.ViewModels;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.Security.Policy;
-
-namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {
         private readonly ILinkRepository _linkRepository;
-        private readonly IBaseRepository<Category> _categoryRepository;
-        private readonly IBaseRepository<Topic> _topicRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly ITopicRepository _topicRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<LinkService> _logger;
 
         public LinkService(ILinkRepository linkRepository,
-                IBaseRepository<Category> categoryRepository,
-                IBaseRepository<Topic> topicRepository,
+                ICategoryRepository categoryRepository,
+                ITopicRepository topicRepository,
                 IMapper mapper, ILogger<LinkService> logger)
         {
             _linkRepository = linkRepository;
@@ -28,6 +22,8 @@ namespace DataSaver.Infrastructure.Services
 
         public async Task<LinkViewModel> CreateAsync(LinkViewModel linkViewModel)
         {
+            await SetLinkPreviewAsync(linkViewModel);
+
             var link = _mapper.Map<Link>(linkViewModel);
 
             link.DateCreated = DateTime.Now;
@@ -61,8 +57,6 @@ namespace DataSaver.Infrastructure.Services
             }
 
             var linksViewModelList = _mapper.Map<IEnumerable<LinkViewModel>>(linksList);
-
-            await SetLinkPreviewAsync(linksViewModelList);
 
             return linksViewModelList;
         }
@@ -103,36 +97,36 @@ namespace DataSaver.Infrastructure.Services
             return linkViewModel;
         }
 
-        private async Task SetLinkPreviewAsync(IEnumerable<LinkViewModel> links)
+        private async Task SetLinkPreviewAsync(LinkViewModel link)
         {
             var httpClient = new HttpClient();
 
-            //var urls = links.Select(_ => _.UrlLink);
+            int i = default;
 
-            foreach (var item in links)
+            while (true)
             {
-                //var response = await httpClient
-                //    .GetAsync($"https://api.linkpreview.net/?key=a4df3e5a7c2713eb4456f03e2b7cf2e1&q={item.UrlLink}");
-
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    var responseContent = await response.Content.ReadAsStringAsync();
-                //    item.LinkPreview = JsonConvert.DeserializeObject<LinkPreview>(responseContent);
-                //}
-                while (true) 
-                {
-                        var response = await httpClient
-                            .GetAsync($"https://api.linkpreview.net/?key=a4df3e5a7c2713eb4456f03e2b7cf2e1&q={item.UrlLink}");
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var responseContent = await response.Content.ReadAsStringAsync();
-                            item.LinkPreview = JsonConvert.DeserializeObject<LinkPreview>(responseContent);
-                            _logger.LogInformation("OK, loaded");
-                            break;
-                        }
+                var response = await httpClient
+                    .GetAsync($"https://api.linkpreview.net/?key=a4df3e5a7c2713eb4456f03e2b7cf2e1&q={link.UrlLink}");
                 
+                i++;
+
+                if (i == 10)
+                {
+                    throw new InvalidOperationException("The amount of attempts is 10, please, reload a page");
                 }
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    var result = JsonConvert.DeserializeObject<LinkPreview>(responseContent);
+
+                    link.PreviewTitle = result.Title!;
+                    link.PreviewImage = result.Image!;
+
+                    _logger.LogInformation($"{i} times loaded");
+                    break;
+                }
+
+                _logger.LogError(response.StatusCode.ToString());
             }     
         }
     }

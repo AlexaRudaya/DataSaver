@@ -24,6 +24,8 @@ public static class ConfigureCoreServices
         services.AddControllersWithViews();
 
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ITopicRepository, TopicRepository>();
         services.AddScoped<ILinkRepository, LinkRepository>();
         services.AddTransient<GlobalExceptionHandlingMiddleware>();
         services.AddScoped<ILinkService, LinkService>();
