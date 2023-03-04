@@ -20,13 +20,6 @@ namespace DataSaver.Controllers
             _logger = logger;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Index()
-        //{ 
-        //    var previews = await _linkService.GetLinkPreviewAsync();
-        //    return View(previews);
-        //}
-
         [HttpGet]
         public async Task<IActionResult> Index(string? response)
         {
@@ -74,9 +67,6 @@ namespace DataSaver.Controllers
                 }
 
                 filter.Links = topicLinks;
-
-                //filter.Links = allLinks.Where(_=>_.CategoryId.Equals(filter.CategoryId)
-                //    && _.TopicId.Equals(filter.TopicId));
 
                 filter.Categories = categories.Select(_ => new SelectListItem
                 {

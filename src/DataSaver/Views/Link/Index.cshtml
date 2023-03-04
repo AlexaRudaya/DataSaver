@@ -62,6 +62,13 @@
                         <dd>
                             @item.Topic!.Name
                         </dd>
+                        <dd>
+                            <a href=@item.UrlLink target="_blank">@item.UrlLink</a> <button class="btn btn-outline-dark" onclick="copyToClipboard('@item.UrlLink')"><i class="fa-regular fa-copy"></i></button>
+                        </dd>
+
+            @*            <dd>
+                            <button onclick="copyToClipboard('@item.UrlLink')"><i class="fa-regular fa-copy fa-lg"></i></button>
+                        </dd>*@
                     </div>
                         <div class="card-footer bg-color-white border-info">
                             <div class="col-0 d-flex justify-content-between">
@@ -75,49 +82,10 @@
                         </div>
                     </div>
             </div>
-
-       @* <div class="col">
-            <div class="card h-200 box-shadow border-info mb-3" style="width: 40%;">
-                <div class="card-header bg-color-white bg-transparent border-info">
-                    <strong>@item.Name</strong>
-                </div>
-                <div class="card-body">
-                    <dd>
-                        <a href=@item.UrlLink target="_blank">
-                            <img src="@item.PreviewImage" style="width:40%" alt="@item.PreviewTitle" />
-                        </a>
-                    </dd>
-                    <dd>
-                        @item.PreviewTitle
-                    </dd>
-                    <dd>
-                        @item.Description
-                    </dd>
-                    <dt>
-                        Category
-                    </dt>
-                    <dd>
-                        @item.Category!.Name
-                    </dd>
-                    <dt>
-                        Topic
-                    </dt>
-                    <dd>
-                        @item.Topic!.Name
-                    </dd>
-                </div>
-                <div class="card-footer justify-content-between bg-color-white border-info">
-                    <div class="col-0 d-flex justify-content-between">
-                        <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id">
-                            <i class="fa-regular fa-pen-to-square fa-lg"></i>
-                        </a>
-                        <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id">
-                            <i class="fa-regular fa-trash-can fa-lg"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>*@
     }
     </div>
+
+    @section scripts{
+        <script src="~/js/CopyToClipboardjs.js"></script>
+    }
 </form>
