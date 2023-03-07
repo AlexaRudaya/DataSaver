@@ -31,23 +31,23 @@
 
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
-    @foreach (var item in Model.Links!)
-    {
+        @foreach (var item in Model.Links!)
+        {
             <div class="col-6">
                 <div class="card h-100 border-info">
                     <div class="card-header bg-color-white bg-transparent border-info">
                         <strong>@item.Name</strong>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <dd>
                             <a href=@item.UrlLink target="_blank">
-                                <img src="@item.PreviewImage" class="card-img-top" style="width:40%" alt="@item.PreviewTitle" />
+                                <img src="@item.PreviewImage" class="card-img-top" style="width: 180px; height: 100px;" alt="@item.PreviewTitle" />
                             </a>
                         </dd>
-                        <dd>
+                        <dd class="linkComponent">
                             @item.PreviewTitle
                         </dd>
-                        <dd>
+                        <dd class="linkComponent">
                             @item.Description
                         </dd>
                         <dt>
@@ -62,27 +62,26 @@
                         <dd>
                             @item.Topic!.Name
                         </dd>
-                        <dd>
-                            <a href=@item.UrlLink target="_blank">@item.UrlLink</a> <button class="btn btn-outline-dark" onclick="copyToClipboard('@item.UrlLink')"><i class="fa-regular fa-copy"></i></button>
+                        <dd class="columnUrl">
+                            <a href=@item.UrlLink target="_blank">@item.UrlLink</a>
+                            <button class="btn btn-outline-dark" onclick="copyToClipboard('@item.UrlLink')">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
                         </dd>
-
-            @*            <dd>
-                            <button onclick="copyToClipboard('@item.UrlLink')"><i class="fa-regular fa-copy fa-lg"></i></button>
-                        </dd>*@
                     </div>
-                        <div class="card-footer bg-color-white border-info">
-                            <div class="col-0 d-flex justify-content-between">
-                                <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id">
-                                    <i class="fa-regular fa-pen-to-square fa-lg"></i>
-                                </a>
-                                <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id">
-                                    <i class="fa-regular fa-trash-can fa-lg"></i>
-                                </a>
-                            </div>
+                    <div class="card-footer bg-color-white border-info">
+                        <div class="col-0 d-flex justify-content-between">
+                            <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id">
+                                <i class="fa-regular fa-pen-to-square fa-lg"></i>
+                            </a>
+                            <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id">
+                                <i class="fa-regular fa-trash-can fa-lg"></i>
+                            </a>
                         </div>
                     </div>
+                </div>
             </div>
-    }
+        }
     </div>
 
     @section scripts{
