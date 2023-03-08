@@ -44,9 +44,9 @@
                                 <img src="@item.PreviewImage" class="card-img-top" style="width: 180px; height: 100px;" alt="@item.PreviewTitle" />
                             </a>
                         </dd>
-                        <dd class="linkComponent">
+                        <dt class="linkComponent">
                             @item.PreviewTitle
-                        </dd>
+                        </dt>
                         <dd class="linkComponent">
                             @item.Description
                         </dd>
@@ -81,6 +81,25 @@
                     </div>
                 </div>
             </div>
+        }
+    </div>
+
+    <div col>
+        @if (Model.PageViewModel!.HasPreviousPage)
+        {
+            <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+               class="btn btn-outline-dark">
+                <i class="fa-solid fa-left-long"></i>
+            </a>
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <a asp-action="Index"
+           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+               class="btn btn-outline-dark">
+                <i class="fa-solid fa-right-long"></i>
+            </a>
         }
     </div>
 

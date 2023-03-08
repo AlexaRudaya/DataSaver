@@ -8,6 +8,8 @@
 
         public IEnumerable<SelectListItem>? Topics { get; set; }
 
+        public PageViewModel? PageViewModel { get; set; }
+
         public int? CategoryId { get; set; }
 
         public int? TopicId { get; set; }
