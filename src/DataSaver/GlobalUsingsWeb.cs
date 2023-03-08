@@ -15,3 +15,4 @@ global using Serilog;
 global using Microsoft.EntityFrameworkCore;
 global using DataSaver.ApplicationCore.ViewModels;
 global using Microsoft.AspNetCore.Mvc.Rendering;
+global using Newtonsoft.Json;

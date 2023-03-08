@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace DataSaver.Controllers
+﻿namespace DataSaver.Controllers
 {
     public class LinkController : Controller
     {
@@ -21,8 +19,10 @@ namespace DataSaver.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? response)
+        public async Task<IActionResult> Index(string? response, int page = 1)
         {
+            int pageSize = 3;
+
             FilterViewModel filter = new();
 
             if (response is null)
@@ -81,7 +81,23 @@ namespace DataSaver.Controllers
                 });
             }
 
-            return View(filter);
+            var totalCount = filter.Links.Count();
+
+            var items = filter.Links.Skip((page - 1) * pageSize).Take(pageSize);
+
+            PageViewModel pageViewModel = new PageViewModel(totalCount, page, pageSize);
+
+            var viewModel = new FilterViewModel
+            {
+                PageViewModel = pageViewModel,
+                Links = items,
+                Categories = filter.Categories,
+                Topics = filter.Topics,
+                CategoryId = filter.CategoryId,
+                TopicId = filter.TopicId,
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -95,7 +111,7 @@ namespace DataSaver.Controllers
 
             string response = JsonConvert.SerializeObject(responseViewModel);
 
-            return RedirectToAction(nameof(Index), new { Response = response });
+            return RedirectToAction(nameof(Index), new { Response = response, page = 1, pageSize = 3 });
         }
 
         [HttpGet]
