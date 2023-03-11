@@ -89,6 +89,8 @@
         {
             <a asp-action="Index"
            asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-CategoryId="@Model.CategoryId"
+           asp-route-TopicId="@Model.TopicId"
                class="btn btn-outline-dark">
                 <i class="fa-solid fa-left-long"></i>
             </a>
@@ -97,6 +99,8 @@
         {
             <a asp-action="Index"
            asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-CategoryId="@Model.CategoryId"
+           asp-route-TopicId="@Model.TopicId"
                class="btn btn-outline-dark">
                 <i class="fa-solid fa-right-long"></i>
             </a>
