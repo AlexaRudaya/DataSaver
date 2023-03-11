@@ -32,6 +32,8 @@ public static class ConfigureCoreServices
         services.AddScoped<ITopicService, TopicService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddAutoMapper(typeof(MapperProfile));
+        services.AddSession();
+
         #endregion
     }
 }

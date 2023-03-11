@@ -10,6 +10,8 @@
 
         public PageViewModel? PageViewModel { get; set; }
 
+        public ResponseViewModel? ResponseViewModel { get; set; }
+
         public int? CategoryId { get; set; }
 
         public int? TopicId { get; set; }

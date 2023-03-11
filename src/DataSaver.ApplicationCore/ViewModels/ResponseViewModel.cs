@@ -1,4 +1,6 @@
-﻿namespace DataSaver.ApplicationCore.ViewModels
+﻿using Newtonsoft.Json;
+
+namespace DataSaver.ApplicationCore.ViewModels
 {
     public sealed class ResponseViewModel
     {

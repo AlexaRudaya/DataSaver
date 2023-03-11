@@ -1,4 +1,6 @@
-﻿namespace DataSaver.Controllers
+﻿using Newtonsoft.Json;
+
+namespace DataSaver.Controllers
 {
     public class LinkController : Controller
     {
@@ -19,11 +21,13 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? response, int page = 1)
+        public async Task<IActionResult> Index(int page = 1, int categoryId = 0, int topicId = 0)
         {
             int pageSize = 3;
 
             FilterViewModel filter = new();
+
+            string? response = HttpContext.Session.GetString("Filter");
 
             if (response is null)
             {
@@ -56,14 +60,14 @@
 
                 if (filter.CategoryId is not null && filter.CategoryId != 0)
                 {
-                    categoryLinks = allLinks.Where(_ => _.CategoryId.Equals(filter.CategoryId));
+                    categoryLinks = allLinks.Where(_ => _.CategoryId.Equals(categoryId));
                 }
 
                 var topicLinks = categoryLinks;
 
                 if (filter.TopicId is not null && filter.TopicId != 0)
                 {
-                    topicLinks = categoryLinks.Where(_ => _.TopicId.Equals(filter.TopicId));
+                    topicLinks = categoryLinks.Where(_ => _.TopicId.Equals(topicId));
                 }
 
                 filter.Links = topicLinks;
@@ -71,13 +75,15 @@
                 filter.Categories = categories.Select(_ => new SelectListItem
                 {
                     Value = _.Id.ToString(),
-                    Text = _.Name
+                    Text = _.Name,
+                    Selected = _.Id == categoryId
                 });
 
                 filter.Topics = topics.Select(_ => new SelectListItem
                 {
                     Value = _.Id.ToString(),
-                    Text = _.Name
+                    Text = _.Name,
+                    Selected = _.Id == topicId
                 });
             }
 
@@ -93,15 +99,15 @@
                 Links = items,
                 Categories = filter.Categories,
                 Topics = filter.Topics,
-                CategoryId = filter.CategoryId,
-                TopicId = filter.TopicId,
+                CategoryId = categoryId,
+                TopicId = topicId,
             };
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Index(FilterViewModel filter)
+        public IActionResult Index(FilterViewModel filter, int page = 1)
         {
             ResponseViewModel responseViewModel = new()
             {
@@ -111,7 +117,16 @@
 
             string response = JsonConvert.SerializeObject(responseViewModel);
 
-            return RedirectToAction(nameof(Index), new { Response = response, page = 1, pageSize = 3 });
+            HttpContext.Session.SetString("Filter", response);
+
+            return RedirectToAction(nameof(Index), new 
+            { 
+                Response = response, 
+                page, 
+                pageSize = 3,
+                filter.CategoryId,
+                filter.TopicId
+            });
         }
 
         [HttpGet]
