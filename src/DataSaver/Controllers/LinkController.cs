@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace DataSaver.Controllers
 {
@@ -21,7 +22,7 @@ namespace DataSaver.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1, int categoryId = 0, int topicId = 0)
+        public async Task<IActionResult> Index(int page = 1, int categoryId = 0, int topicId = 0, string? searchTerm = "")
         {
             int pageSize = 3;
 
@@ -32,9 +33,10 @@ namespace DataSaver.Controllers
             if (response is null)
             {
                 var categories = await _categoryService.GetAllAsync();
+
                 var topics = await _topicService.GetAllAsync();
 
-                filter.Links = await _linkService.GetAllAsync();
+                filter.Links = await _linkService.GetAllAsync(searchTerm);
 
                 filter.Categories = categories.Select(_ => new SelectListItem
                 {
@@ -54,7 +56,8 @@ namespace DataSaver.Controllers
 
                 var categories = await _categoryService.GetAllAsync();
                 var topics = await _topicService.GetAllAsync();
-                var allLinks = await _linkService.GetAllAsync();
+
+                var allLinks = await _linkService.GetAllAsync(searchTerm);
 
                 var categoryLinks = allLinks;
 
@@ -70,7 +73,13 @@ namespace DataSaver.Controllers
                     topicLinks = categoryLinks.Where(_ => _.TopicId.Equals(topicId));
                 }
 
-                filter.Links = topicLinks;
+                if (searchTerm != "")
+                {
+                    filter.Links = topicLinks.Where(_ =>
+                        _.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                        _.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                        _.PreviewTitle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                }
 
                 filter.Categories = categories.Select(_ => new SelectListItem
                 {
@@ -87,6 +96,8 @@ namespace DataSaver.Controllers
                 });
             }
 
+            #region Pagination
+
             var totalCount = filter.Links.Count();
 
             var items = filter.Links.Skip((page - 1) * pageSize).Take(pageSize);
@@ -101,7 +112,10 @@ namespace DataSaver.Controllers
                 Topics = filter.Topics,
                 CategoryId = categoryId,
                 TopicId = topicId,
+                SearchTerm = searchTerm,
             };
+
+            #endregion
 
             return View(viewModel);
         }
@@ -113,21 +127,39 @@ namespace DataSaver.Controllers
             {
                 CategoryId = filter.CategoryId,
                 TopicId = filter.TopicId,
+                SearchTerm = filter.SearchTerm
             };
 
             string response = JsonConvert.SerializeObject(responseViewModel);
 
             HttpContext.Session.SetString("Filter", response);
 
-            return RedirectToAction(nameof(Index), new 
-            { 
-                Response = response, 
-                page, 
+            return RedirectToAction(nameof(Index), new
+            {
+                Response = response,
+                page,
                 pageSize = 3,
-                filter.CategoryId,
-                filter.TopicId
+                filter?.CategoryId,
+                filter?.TopicId,
+                searchTerm = filter.SearchTerm
             });
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> Search(string searchTerm)
+        //{
+        //    var allLinks = await _linkService.GetAllAsync();
+
+        //    if (!string.IsNullOrEmpty(searchTerm))
+        //    {
+        //        allLinks = allLinks.Where(_ =>
+        //            _.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+        //            _.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+        //            _.PreviewTitle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+        //            .ToList();
+        //    }
+        //    return View(allLinks);
+        //}
 
         [HttpGet]
         public async Task<IActionResult> CreateLink()

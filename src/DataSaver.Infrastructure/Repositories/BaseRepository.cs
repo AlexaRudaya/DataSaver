@@ -6,7 +6,7 @@ namespace DataSaver.Infrastructure.Repositories
     {
         private readonly LinkContext _dbContext;
 
-        private readonly DbSet<T> _table;  // separate table
+        private readonly DbSet<T> _table;  
 
         public BaseRepository(LinkContext dbContext)
         {

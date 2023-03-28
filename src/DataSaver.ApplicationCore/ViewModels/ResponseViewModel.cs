@@ -7,5 +7,8 @@ namespace DataSaver.ApplicationCore.ViewModels
         public int? CategoryId { get; set; }
 
         public int? TopicId { get; set; }
+
+        public string? SearchTerm { get; set; }
+
     }
 }

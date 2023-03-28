@@ -18,6 +18,20 @@
             </div>
         </div>
     </div>
+
+@*    <a asp-controller="Link" asp-action="Search">
+        <p>
+            Title: <input type="text" name="searchTerm" />
+            <input type="submit" value="Filter"/>
+        </p>
+    </a>*@
+
+    <div class="form-group">
+        <label for="searchTerm">Search</label>
+        <input type="text" id="searchTerm" name="searchTerm" class="form-control" value="@Model.SearchTerm" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+
     <div class="container p-3">
         <select asp-for="CategoryId" button type="button" class="btn btn-outline-dark" asp-items="Model.Categories">
             <option value="">All Categories</option>
