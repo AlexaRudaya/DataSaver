@@ -1,4 +1,6 @@
-﻿namespace DataSaver.Infrastructure.Services
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {
@@ -41,10 +43,10 @@
             return linkViewModel;
         }
 
-        public async Task<IEnumerable<LinkViewModel>> GetAllAsync()
+        public async Task<IEnumerable<LinkViewModel>> GetAllAsync(string? searchTerm)
         {
             var linksList = await _linkRepository.GetAllAsync(
-                include: query => query     //lazy loading
+                include: query => query     
                     .Include(_ => _.Category!)
                     .Include(_ => _.Topic!));
 
@@ -59,6 +61,11 @@
             var linksViewModelList = _mapper.Map<IEnumerable<LinkViewModel>>(linksList);
 
             return linksViewModelList;
+        }
+
+        public Task<IEnumerable<LinkViewModel>> GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<LinkViewModel> GetByIdAsync(int linkId)
@@ -129,5 +136,21 @@
                 _logger.LogError(response.StatusCode.ToString());
             }     
         }
+
+        //public async Task<List<LinkViewModel>> Search(string searchTerm)
+        //{
+        //    var allLinks = await _linkRepository.GetAllAsync();
+
+        //    if (!string.IsNullOrEmpty(searchTerm))
+        //    {
+        //        allLinks = allLinks.Where(_ =>
+        //            _.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+        //            _.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+        //            _.PreviewTitle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+        //            .ToList();
+        //    }
+
+        //    return (List<LinkViewModel>)allLinks;
+        //}
     }
 }
