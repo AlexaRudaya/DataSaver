@@ -4,9 +4,9 @@
     {
         public IEnumerable<LinkViewModel>? Links { get; set; }
 
-        public IEnumerable<SelectListItem>? Categories { get; set; }
+        public IEnumerable<SelectListItem>? CategoriesList { get; set; }
 
-        public IEnumerable<SelectListItem>? Topics { get; set; }
+        public IEnumerable<SelectListItem>? TopicsList { get; set; }
 
         public PageViewModel? PageViewModel { get; set; }
 
@@ -20,7 +20,7 @@
 
         public FilterViewModel()
         {
-
+            ResponseViewModel = new();
         }
     }
 }

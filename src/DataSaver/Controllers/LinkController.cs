@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace DataSaver.Controllers
 {
@@ -22,144 +21,69 @@ namespace DataSaver.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1, int categoryId = 0, int topicId = 0, string? searchTerm = "")
+        public IActionResult PreIndex()
+        { 
+            HttpContext.Session.Clear();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            int pageSize = 3;
+            FilterViewModel viewModel = new();
 
-            FilterViewModel filter = new();
+            var categories = await _categoryService.GetAllAsync();
+            var topics = await _topicService.GetAllAsync();
+            var links = await _linkService.GetAllAsync();
 
-            string? response = HttpContext.Session.GetString("Filter");
-
-            if (response is null)
+            viewModel.CategoriesList = categories.Select(_ => new SelectListItem
             {
-                var categories = await _categoryService.GetAllAsync();
+                Value = _.Id.ToString(),
+                Text = _.Name
+            });
 
-                var topics = await _topicService.GetAllAsync();
-
-                filter.Links = await _linkService.GetAllAsync(searchTerm);
-
-                filter.Categories = categories.Select(_ => new SelectListItem
-                {
-                    Value = _.Id.ToString(),
-                    Text = _.Name
-                });
-
-                filter.Topics = topics.Select(_ => new SelectListItem
-                {
-                    Value = _.Id.ToString(),
-                    Text = _.Name
-                });
-            }
-            else
+            viewModel.TopicsList = topics.Select(_ => new SelectListItem
             {
-                filter = JsonConvert.DeserializeObject<FilterViewModel>(response)!;
+                Value = _.Id.ToString(),
+                Text = _.Name
+            });
 
-                var categories = await _categoryService.GetAllAsync();
-                var topics = await _topicService.GetAllAsync();
+            string? jsonFilter = HttpContext.Session.GetString("Filter");
 
-                var allLinks = await _linkService.GetAllAsync(searchTerm);
+            if (jsonFilter is not null)
+            {
+                viewModel.ResponseViewModel = JsonConvert.DeserializeObject<ResponseViewModel>(jsonFilter);
 
-                var categoryLinks = allLinks;
-
-                if (filter.CategoryId is not null && filter.CategoryId != 0)
-                {
-                    categoryLinks = allLinks.Where(_ => _.CategoryId.Equals(categoryId));
-                }
-
-                var topicLinks = categoryLinks;
-
-                if (filter.TopicId is not null && filter.TopicId != 0)
-                {
-                    topicLinks = categoryLinks.Where(_ => _.TopicId.Equals(topicId));
-                }
-
-                if (searchTerm != "")
-                {
-                    filter.Links = topicLinks.Where(_ =>
-                        _.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                        _.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                        _.PreviewTitle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-                }
-
-                filter.Categories = categories.Select(_ => new SelectListItem
-                {
-                    Value = _.Id.ToString(),
-                    Text = _.Name,
-                    Selected = _.Id == categoryId
-                });
-
-                filter.Topics = topics.Select(_ => new SelectListItem
-                {
-                    Value = _.Id.ToString(),
-                    Text = _.Name,
-                    Selected = _.Id == topicId
-                });
+                links = await _linkService.GetAllByFilterAsync(
+                    viewModel.ResponseViewModel!.CategoryId,
+                    viewModel.ResponseViewModel!.TopicId,
+                    viewModel.ResponseViewModel!.SearchTerm);
             }
 
-            #region Pagination
-
-            var totalCount = filter.Links.Count();
-
-            var items = filter.Links.Skip((page - 1) * pageSize).Take(pageSize);
-
-            PageViewModel pageViewModel = new PageViewModel(totalCount, page, pageSize);
-
-            var viewModel = new FilterViewModel
-            {
-                PageViewModel = pageViewModel,
-                Links = items,
-                Categories = filter.Categories,
-                Topics = filter.Topics,
-                CategoryId = categoryId,
-                TopicId = topicId,
-                SearchTerm = searchTerm,
-            };
-
-            #endregion
+            var count = links.Count();
+            viewModel.PageViewModel = new(count, pageNumber);
+            viewModel.Links = links.Skip((pageNumber - 1) * viewModel.PageViewModel.PageSize).Take(viewModel.PageViewModel.PageSize);
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult Index(FilterViewModel filter, int page = 1)
+        public IActionResult Index(FilterViewModel viewModel, int pageNumber = 1)
         {
             ResponseViewModel responseViewModel = new()
             {
-                CategoryId = filter.CategoryId,
-                TopicId = filter.TopicId,
-                SearchTerm = filter.SearchTerm
+                CategoryId = viewModel.ResponseViewModel!.CategoryId,
+                TopicId = viewModel.ResponseViewModel!.TopicId,
+                SearchTerm = viewModel.ResponseViewModel!.SearchTerm,
             };
 
-            string response = JsonConvert.SerializeObject(responseViewModel);
+            string jsonFilter = JsonConvert.SerializeObject(responseViewModel);
 
-            HttpContext.Session.SetString("Filter", response);
+            HttpContext.Session.SetString("Filter", jsonFilter);
 
-            return RedirectToAction(nameof(Index), new
-            {
-                Response = response,
-                page,
-                pageSize = 3,
-                filter?.CategoryId,
-                filter?.TopicId,
-                searchTerm = filter.SearchTerm
-            });
+            return RedirectToAction(nameof(Index), new {pageNumber});        
         }
-
-        //[HttpGet]
-        //public async Task<IActionResult> Search(string searchTerm)
-        //{
-        //    var allLinks = await _linkService.GetAllAsync();
-
-        //    if (!string.IsNullOrEmpty(searchTerm))
-        //    {
-        //        allLinks = allLinks.Where(_ =>
-        //            _.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-        //            _.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-        //            _.PreviewTitle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-        //            .ToList();
-        //    }
-        //    return View(allLinks);
-        //}
 
         [HttpGet]
         public async Task<IActionResult> CreateLink()

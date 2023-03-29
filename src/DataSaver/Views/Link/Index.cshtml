@@ -19,25 +19,17 @@
         </div>
     </div>
 
-@*    <a asp-controller="Link" asp-action="Search">
-        <p>
-            Title: <input type="text" name="searchTerm" />
-            <input type="submit" value="Filter"/>
-        </p>
-    </a>*@
-
     <div class="form-group">
-        <label for="searchTerm">Search</label>
-        <input type="text" id="searchTerm" name="searchTerm" class="form-control" value="@Model.SearchTerm" />
+        <input asp-for="ResponseViewModel!.SearchTerm" class="form-control" placeholder="Search here.." />
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 
     <div class="container p-3">
-        <select asp-for="CategoryId" button type="button" class="btn btn-outline-dark" asp-items="Model.Categories">
+        <select asp-for="ResponseViewModel!.CategoryId" button type="button" class="btn btn-outline-dark" asp-items="Model.CategoriesList">
             <option value="">All Categories</option>
         </select>
 
-        <select asp-for="TopicId" button type="button" class="btn btn-outline-dark" asp-items="Model.Topics">
+        <select asp-for="ResponseViewModel!.TopicId" button type="button" class="btn btn-outline-dark" asp-items="Model.TopicsList">
             <option value="">All Types</option>
         </select>
         <input type="submit" class="btn btn-outline-dark btn-sm" value="Apply" />
@@ -102,9 +94,9 @@
         @if (Model.PageViewModel!.HasPreviousPage)
         {
             <a asp-action="Index"
-           asp-route-page="@(Model.PageViewModel.PageNumber - 1)"
-           asp-route-CategoryId="@Model.CategoryId"
-           asp-route-TopicId="@Model.TopicId"
+           asp-route-pageNumber="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-CategoryId="@Model.ResponseViewModel!.CategoryId"
+           asp-route-TopicId="@Model.ResponseViewModel.TopicId"
                class="btn btn-outline-dark">
                 <i class="fa-solid fa-left-long"></i>
             </a>
@@ -112,9 +104,9 @@
         @if (Model.PageViewModel.HasNextPage)
         {
             <a asp-action="Index"
-           asp-route-page="@(Model.PageViewModel.PageNumber + 1)"
-           asp-route-CategoryId="@Model.CategoryId"
-           asp-route-TopicId="@Model.TopicId"
+           asp-route-pageNumber="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-CategoryId="@Model.ResponseViewModel!.CategoryId"
+           asp-route-TopicId="@Model.ResponseViewModel.TopicId"
                class="btn btn-outline-dark">
                 <i class="fa-solid fa-right-long"></i>
             </a>
