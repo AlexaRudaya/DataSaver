@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace DataSaver.ApplicationCore.ViewModels
+﻿namespace DataSaver.ApplicationCore.ViewModels
 {
     public sealed class ResponseViewModel
     {
@@ -9,6 +7,5 @@ namespace DataSaver.ApplicationCore.ViewModels
         public int? TopicId { get; set; }
 
         public string? SearchTerm { get; set; }
-
     }
 }

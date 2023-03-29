@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace DataSaver.Infrastructure.Services
 {
@@ -43,12 +44,55 @@ namespace DataSaver.Infrastructure.Services
             return linkViewModel;
         }
 
-        public async Task<IEnumerable<LinkViewModel>> GetAllAsync(string? searchTerm)
+        public async Task<IEnumerable<LinkViewModel>> GetAllByFilterAsync(
+            int? categoryId = null,
+            int? topicId = null,
+            string? search = null)
+        {
+            var expressions = new List<Expression<Func<Link, bool>>>();
+
+            if (categoryId is not null && categoryId != 0)
+            {
+                expressions.Add(_ => _.CategoryId.Equals(categoryId));
+            }
+
+            if (topicId is not null && topicId != 0)
+            {
+                expressions.Add(_ => _.TopicId.Equals(topicId));
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                expressions.Add(_ =>
+                        _.Name!.ToUpper().Contains(search.ToUpper()) ||
+                        search.ToUpper().Contains(_.Name.ToUpper()) ||
+                        _.Category!.Name!.ToUpper().Contains(search.ToUpper()) ||
+                        search.ToUpper().Contains(_.Category.Name.ToUpper()) ||
+                        _.Topic!.Name!.ToUpper().Contains(search.ToUpper()) ||
+                        search.ToUpper().Contains(_.Topic.Name.ToUpper()) ||
+                        _.Description!.ToUpper().Contains(search.ToUpper()) ||
+                        search.ToUpper().Contains(_.Description.ToUpper()) ||
+                        _.PreviewTitle!.ToUpper().Contains(search.ToUpper()) ||
+                        search.ToUpper().Contains(_.PreviewTitle.ToUpper()));
+            } 
+
+            var links = await _linkRepository.GetAllByFilterAsync(
+
+                include: query => query
+                    .Include(_ => _.Category)
+                    .Include(_ => _.Topic)!,
+                expressions.ToArray());
+
+            var linksViewModelList = _mapper.Map<IEnumerable<LinkViewModel>>(links);
+
+            return linksViewModelList;
+        }
+
+        public async Task<IEnumerable<LinkViewModel>> GetAllAsync()
         {
             var linksList = await _linkRepository.GetAllAsync(
-                include: query => query     
-                    .Include(_ => _.Category!)
-                    .Include(_ => _.Topic!));
+              include: query => query
+                  .Include(_ => _.Category!)
+                  .Include(_ => _.Topic!));
 
             if (linksList == null)
             {
@@ -61,11 +105,6 @@ namespace DataSaver.Infrastructure.Services
             var linksViewModelList = _mapper.Map<IEnumerable<LinkViewModel>>(linksList);
 
             return linksViewModelList;
-        }
-
-        public Task<IEnumerable<LinkViewModel>> GetAllAsync()
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<LinkViewModel> GetByIdAsync(int linkId)
@@ -136,21 +175,5 @@ namespace DataSaver.Infrastructure.Services
                 _logger.LogError(response.StatusCode.ToString());
             }     
         }
-
-        //public async Task<List<LinkViewModel>> Search(string searchTerm)
-        //{
-        //    var allLinks = await _linkRepository.GetAllAsync();
-
-        //    if (!string.IsNullOrEmpty(searchTerm))
-        //    {
-        //        allLinks = allLinks.Where(_ =>
-        //            _.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-        //            _.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-        //            _.PreviewTitle.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-        //            .ToList();
-        //    }
-
-        //    return (List<LinkViewModel>)allLinks;
-        //}
     }
 }

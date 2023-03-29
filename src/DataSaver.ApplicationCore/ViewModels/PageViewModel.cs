@@ -2,14 +2,22 @@
 {
     public sealed class PageViewModel
     {
+        public int PageSize { get; set; }
+
         public int PageNumber { get; private set; }
 
         public int TotalPages { get; private set; }
 
-        public PageViewModel(int count, int pageNumber, int pageSize)
+        public PageViewModel()
         {
+            
+        }
+
+        public PageViewModel(int count = 1, int pageNumber = 1)
+        {
+            PageSize = 3;
             PageNumber = pageNumber;
-            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            TotalPages = (int)Math.Ceiling(count / (double)PageSize);
         }
 
         public bool HasPreviousPage => PageNumber > 1;
