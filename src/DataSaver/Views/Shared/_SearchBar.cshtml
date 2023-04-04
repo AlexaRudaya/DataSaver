@@ -1,0 +1,8 @@
+﻿@model FilterViewModel
+
+<li class="search-bar ml-lg-3 mr-lg-5 mt-lg-0 mt-4">
+    <form asp-controller="Link" asp-action="Index" method="post" class="search position-relative">
+        <input asp-for="ResponseViewModel!.SearchTerm" class="search__input" placeholder="Search here.." required="">
+        <span class="fas fa-search search__icon"></span>
+    </form>
+</li>
