@@ -19,11 +19,6 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <input asp-for="ResponseViewModel!.SearchTerm" class="form-control" placeholder="Search here.." />
-    </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-
     <div class="container p-3">
         <select asp-for="ResponseViewModel!.CategoryId" button type="button" class="btn btn-outline-dark" asp-items="Model.CategoriesList">
             <option value="">All Categories</option>
@@ -34,7 +29,6 @@
         </select>
         <input type="submit" class="btn btn-outline-dark btn-sm" value="Apply" />
     </div>
-
 
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach (var item in Model.Links!)

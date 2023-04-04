@@ -10,3 +10,4 @@ global using AutoMapper;
 global using DataSaver.ApplicationCore.Exceptions;
 global using DataSaver.ApplicationCore.Interfaces.IService;
 global using Newtonsoft.Json;
+global using System.Linq.Expressions;

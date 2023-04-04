@@ -37,13 +37,8 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Topic" asp-action="Index">Topics</a>
                             </li>
-                            <li class="search-bar ml-lg-3 mr-lg-5 mt-lg-0 mt-4">
-                                <form class="search position-relative">
-                                    <input type="search" class="search__input" name="search" placeholder="Search here.."
-                                           onload="equalWidth()" required="">
-                                    <span class="fas fa-search search__icon"></span>
-                                </form>
-                            </li>
+
+                            @await Html.PartialAsync("_SearchBar")
                         </ul>
                     </div>
 
