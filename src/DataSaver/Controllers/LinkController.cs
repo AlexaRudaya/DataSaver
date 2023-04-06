@@ -20,6 +20,10 @@ namespace DataSaver.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Redirects to the Index action after clearing the HttpContext Session data.
+        /// </summary>
+        /// <returns>The Index view.</returns>
         [HttpGet]
         public IActionResult PreIndex()
         { 
@@ -28,6 +32,11 @@ namespace DataSaver.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Displays the Index page.
+        /// </summary>
+        /// <param name="pageNumber">The page number to display, default - 1.</param>
+        /// <returns>The Index view.</returns>
         [HttpGet]
         public async Task<IActionResult> Index(int pageNumber = 1)
         {
@@ -68,6 +77,12 @@ namespace DataSaver.Controllers
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Sets a filter for the Index page and redirects to the page with the filtered results.
+        /// </summary>
+        /// <param name="viewModel">The view model containing the filter data.</param>
+        /// <param name="pageNumber">The page number to display.</param>
+        /// <returns>The redirection to the Index page with the filtered results.</returns>
         [HttpPost]
         public IActionResult Index(FilterViewModel viewModel, int pageNumber = 1)
         {
@@ -85,6 +100,10 @@ namespace DataSaver.Controllers
             return RedirectToAction(nameof(Index), new {pageNumber});        
         }
 
+        /// <summary>
+        ///  Retrieves all categories and topics and passes them to the view model. 
+        /// </summary>
+        /// <returns>The view for link creation.</returns>
         [HttpGet]
         public async Task<IActionResult> CreateLink()
         {
@@ -112,6 +131,14 @@ namespace DataSaver.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Creates a new link. 
+        /// </summary>
+        /// <param name="linkForCreateVM">Contains the LinkViewModel and lists of categories and topics.</param>
+        /// <returns>
+        /// A redirect to the Index page, if the model state is valid, 
+        /// or the view with the received LinkForCreateViewModel otherwise.
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> CreateLink(LinkForCreateViewModel linkForCreateVM)
         {
@@ -131,6 +158,11 @@ namespace DataSaver.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a view for updating a link with the certain ID along with its categories and topics.
+        /// </summary>
+        /// <param name="id">The Id of the link to update.</param>
+        /// <returns>The view for the link to update.</returns>
         [HttpGet]
         public async Task<IActionResult> UpdateLink(int id)
         {
@@ -158,6 +190,14 @@ namespace DataSaver.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Updates an existing link.
+        /// </summary>
+        /// <param name="linkForCreateVM">The link view model to update.</param>
+        /// <returns>
+        /// A redirect to the Index page, if the model state is valid, 
+        /// or the view with the received LinkForCreateViewModel otherwise.
+        /// </returns>
         [HttpPost]
         public async Task<IActionResult> UpdateLink(LinkForCreateViewModel linkForCreateVM)
         {
@@ -173,6 +213,11 @@ namespace DataSaver.Controllers
             else return View(linkForCreateVM);
         }
 
+        /// <summary>
+        /// Creates a view for deleting a link with the certain ID along with its categories and topics.
+        /// </summary>
+        /// <param name="id">The Id of the link to be deleted.</param>
+        /// <returns>The view for the link to remove.</returns>
         [HttpGet]
         public async Task<IActionResult> DeleteLink(int id)
         {
@@ -200,6 +245,11 @@ namespace DataSaver.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Deletes a link.
+        /// </summary>
+        /// <param name="linkToRemoveVM">The view model containing the link to remove.</param>
+        /// <returns>A redirect to the index page.</returns>
         [HttpPost]
         public async Task<IActionResult> DeleteLink(LinkForCreateViewModel linkToRemoveVM)
         {

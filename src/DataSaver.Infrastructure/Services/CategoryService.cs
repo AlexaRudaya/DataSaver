@@ -14,6 +14,11 @@
             _logger = logger;
         }
 
+        /// <summary>
+        /// Creates a new category.
+        /// </summary>
+        /// <param name="categoryViewModel">The view model for the category to be created.</param>
+        /// <returns>The view model for the ctreated category.</returns>
         public async Task<CategoryViewModel> CreateAsync(CategoryViewModel categoryViewModel)
         {
             var category = _mapper.Map<Category>(categoryViewModel);
@@ -25,6 +30,11 @@
             return categoryViewModel;
         }
 
+        /// <summary>
+        /// Removes an existing category.
+        /// </summary>
+        /// <param name="categoryViewModel">The view model representing the category to delete.</param>
+        /// <returns>The view model representing the deleted category.</returns>
         public async Task<CategoryViewModel> DeleteAsync(CategoryViewModel categoryViewModel)
         {
             var category = _mapper.Map<Category>(categoryViewModel);
@@ -34,6 +44,11 @@
             return categoryViewModel;
         }
 
+        /// <summary>
+        /// Gets all of the categories.
+        /// </summary>
+        /// <returns>The view model representing the list of all categories.</returns>
+        /// <exception cref="CategoryNotFoundException">Thrown when no categories were found.</exception>
         public async Task<IEnumerable<CategoryViewModel>> GetAllAsync()
         {
             var categoryList = await _categoryRepository.GetAllAsync();
@@ -51,11 +66,12 @@
             return categoriesViewModelList;
         }
 
-        public Task<IEnumerable<CategoryViewModel>> GetAllWithFiltersAsync(int? categoryId, int? topicId)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        ///  Retrieves a category by it's ID. 
+        /// </summary>
+        /// <param name="categoryId">ID of the category wanted to get.</param>
+        /// <returns>The view model of a category with the given ID.</returns>
+        /// <exception cref="CategoryNotFoundException">Thrown when there is no category with such ID.</exception>
         public async Task<CategoryViewModel> GetByIdAsync(int categoryId)
         {
             var entity = await _categoryRepository.GetByIdAsync(categoryId);
@@ -73,6 +89,11 @@
             return categoryViewModel;
         }
 
+        /// <summary>
+        /// Updates an existing category with the information provided in the categoryViewModel.
+        /// </summary>
+        /// <param name="categoryViewModel">Contains the updated information for the category.</param>
+        /// <returns>The updated view model of a category.</returns>
         public async Task<CategoryViewModel> UpdateAsync(CategoryViewModel categoryViewModel)
         {
             var category = _mapper.Map<Category>(categoryViewModel);
