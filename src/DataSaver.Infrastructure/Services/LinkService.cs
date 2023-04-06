@@ -1,4 +1,6 @@
-﻿namespace DataSaver.Infrastructure.Services
+﻿using Azure.Core;
+
+namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {
@@ -20,6 +22,14 @@
             _logger = logger;
         }
 
+        /// <summary>
+        /// Creates a new link.
+        /// </summary>
+        /// <param name="linkViewModel">The view model for the link to be created.</param>
+        /// <returns>The view model for the ctreated link.</returns>
+        /// <remarks>
+        /// This method sets the link preview using the link URL.
+        /// </remarks>
         public async Task<LinkViewModel> CreateAsync(LinkViewModel linkViewModel)
         {
             await SetLinkPreviewAsync(linkViewModel);
@@ -33,6 +43,11 @@
             return linkViewModel;
         }
 
+        /// <summary>
+        /// Removes an existing link.
+        /// </summary>
+        /// <param name="linkViewModel">The view model representing the link to delete.</param>
+        /// <returns>The view model representing the deleted link.</returns>
         public async Task<LinkViewModel> DeleteAsync(LinkViewModel linkViewModel)
         {
             var link = _mapper.Map<Link>(linkViewModel);
@@ -41,6 +56,13 @@
             return linkViewModel;
         }
 
+        /// <summary>
+        /// Gets a filtered list of links based on category, topic, search parameters.
+        /// </summary>
+        /// <param name="categoryId">Category ID to filter.</param>
+        /// <param name="topicId">Topic ID to filter.</param>
+        /// <param name="search">Search string to match name, category name, topic name, description and preview title.</param>
+        /// <returns>The list of the links that match the provided filters.</returns>
         public async Task<IEnumerable<LinkViewModel>> GetAllByFilterAsync(
             int? categoryId = null,
             int? topicId = null,
@@ -84,6 +106,11 @@
             return linksViewModelList;
         }
 
+        /// <summary>
+        /// Gets the list of all links.
+        /// </summary>
+        /// <returns>The view model representing the list of all links.</returns>
+        /// <exception cref="LinkNotFoundException">Thrown when no links were found.</exception>
         public async Task<IEnumerable<LinkViewModel>> GetAllAsync()
         {
             var linksList = await _linkRepository.GetAllAsync(
@@ -104,6 +131,12 @@
             return linksViewModelList;
         }
 
+        /// <summary>
+        /// Retrieves a link by it's ID.
+        /// </summary>
+        /// <param name="linkId">ID of the link wanted to get.</param>
+        /// <returns>The view model of a link with the given ID.</returns>
+        /// <exception cref="LinkNotFoundException">Thrown when there is no link with such ID.</exception>
         public async Task<LinkViewModel> GetByIdAsync(int linkId)
         {
             var entity = await _linkRepository.GetByIdAsync(linkId);    
@@ -127,6 +160,11 @@
             return linkViewModel;   
         }
 
+        /// <summary>
+        /// Updates an existing link with the information provided in the linkViewModel.
+        /// </summary>
+        /// <param name="linkViewModel">Contains the updated information for the link.</param>
+        /// <returns>The updated view model of a link.</returns>
         public async Task<LinkViewModel> UpdateAsync(LinkViewModel linkViewModel)
         {
             var link = _mapper.Map<Link>(linkViewModel);
@@ -140,20 +178,31 @@
             return linkViewModel;
         }
 
+        /// <summary>
+        /// Sets the preview image and title for a given link using external LinkPreview API.
+        /// </summary>
+        /// <param name="link">The link for which to set a preview.</param>
+        /// <returns>The updated view model of a link with preview data.</returns>
+        /// <exception cref="InvalidOperationException">If the API request fails after 10 attempts.</exception>
+        /// <remarks>
+        /// If the request to API is successful, response is deserialized => updates the provided link with the preview data.
+        ///If the request fails, it retries up to 10 times.
+        ///If the request fails after 10 attempts, throws an InvalidOperationException.
+        /// </remarks>>
         private async Task SetLinkPreviewAsync(LinkViewModel link)
         {
             var httpClient = new HttpClient();
 
-            int i = default;
+            int attempts = default;
 
             while (true)
             {
                 var response = await httpClient
                     .GetAsync($"https://api.linkpreview.net/?key=a4df3e5a7c2713eb4456f03e2b7cf2e1&q={link.UrlLink}");
-                
-                i++;
 
-                if (i == 10)
+                attempts++;
+
+                if (attempts == 10)
                 {
                     throw new InvalidOperationException("The amount of attempts is 10, please, reload a page");
                 }
@@ -165,7 +214,7 @@
                     link.PreviewTitle = result.Title!;
                     link.PreviewImage = result.Image!;
 
-                    _logger.LogInformation($"{i} times loaded");
+                    _logger.LogInformation($"{attempts} times loaded");
                     break;
                 }
 
