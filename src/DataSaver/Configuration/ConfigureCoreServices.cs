@@ -21,6 +21,7 @@ public static class ConfigureCoreServices
         #endregion
 
         #region Services
+
         services.AddControllersWithViews();
 
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
