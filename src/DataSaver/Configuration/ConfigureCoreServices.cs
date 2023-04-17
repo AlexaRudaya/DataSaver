@@ -32,9 +32,20 @@ public static class ConfigureCoreServices
         services.AddScoped<ILinkService, LinkService>();
         services.AddScoped<ITopicService, TopicService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<ISetLinkPreviewService, SetLinkPreviewService>();
         services.AddAutoMapper(typeof(MapperProfile));
+
         services.AddSession();
 
         #endregion
+
+        #region HttpClient
+
+        services.AddHttpClient();
+
+        services.Configure<LinkPreviewOptions>(configuration.GetSection("LinkPreview"));
+
+        #endregion
+
     }
 }

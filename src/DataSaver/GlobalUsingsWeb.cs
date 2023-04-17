@@ -15,3 +15,8 @@ global using Serilog;
 global using Microsoft.EntityFrameworkCore;
 global using DataSaver.ApplicationCore.ViewModels;
 global using Microsoft.AspNetCore.Mvc.Rendering;
+global using DataSaver.Helpers;
+global using DataSaver.Interfaces;
+global using Microsoft.Extensions.Options;
+global using Newtonsoft.Json;
+global using DataSaver.Services;
