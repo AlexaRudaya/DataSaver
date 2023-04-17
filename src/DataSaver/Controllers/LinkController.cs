@@ -1,22 +1,23 @@
-﻿using Newtonsoft.Json;
-
-namespace DataSaver.Controllers
+﻿namespace DataSaver.Controllers
 {
     public class LinkController : Controller
     {
         private readonly ILinkService _linkService;
         private readonly ICategoryService _categoryService;
         private readonly ITopicService _topicService;
+        private readonly ISetLinkPreviewService _setLinkPreviewService;
         private readonly ILogger<LinkController> _logger;
 
         public LinkController(ILinkService linkService,
             ICategoryService categoryService,
             ITopicService topicService,
+            ISetLinkPreviewService setLinkPreviewService,
             ILogger<LinkController> logger)
         {
             _linkService = linkService;
             _categoryService = categoryService;
             _topicService = topicService;
+            _setLinkPreviewService = setLinkPreviewService;
             _logger = logger;
         }
 
@@ -145,6 +146,8 @@ namespace DataSaver.Controllers
             if (ModelState.IsValid)
             {
                 var linkViewModel = linkForCreateVM.LinkVM;
+
+                await _setLinkPreviewService.SetLinkPreviewAsync(linkViewModel!);
 
                 await _linkService.CreateAsync(linkViewModel!);
 

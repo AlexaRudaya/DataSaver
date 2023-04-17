@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Filters;
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(_ =>
