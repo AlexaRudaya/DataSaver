@@ -20,3 +20,5 @@ global using DataSaver.Interfaces;
 global using Microsoft.Extensions.Options;
 global using Newtonsoft.Json;
 global using DataSaver.Services;
+global using System.ComponentModel.DataAnnotations;
+

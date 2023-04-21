@@ -43,6 +43,9 @@
                             <li class="nav-item">
                                 @await Html.PartialAsync("_SearchBar", new FilterViewModel())
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
                             @* @if (SignInManager.IsSignedIn(User))
                             {
                             <li class="nav-item">
@@ -104,9 +107,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/assets/js/jquery-3.3.1.min.js"></script>
-    <script src="~/assets/js/theme-change.js"></script>
     <script src="~/assets/js/bootstrap.min.js"></script>
-    <script src="~/js/CopyToClipboardjs.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
