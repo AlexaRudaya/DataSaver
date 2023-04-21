@@ -1,3 +1,5 @@
+//var CorsPolicy = "_corsPolicy";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(_ =>
@@ -16,13 +18,32 @@ builder.Services.Configure<IdentityOptions>(_ =>
     _.SignIn.RequireConfirmedAccount = false;
 });
 
-builder.Services.AddAntiforgery(options =>
+//builder.Services.AddCors(options =>  
+//{
+//    options.AddPolicy("CorsPolicy", builder =>
+//    {
+//        builder.AllowAnyOrigin()
+//               .AllowAnyMethod()
+//               .AllowAnyHeader();
+//    });
+//});
+
+const string CORS_POLICY = "CorsPolicy";
+builder.Services.AddCors(options =>
 {
-    options.HeaderName = "X-CSRF-TOKEN";
+    options.AddPolicy(name: CORS_POLICY,
+                      _ =>
+                      {
+                          _.WithOrigins("https://localhost:7092")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                      });
 });
 
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(_ =>
 {
     _.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "Identity_API", Version = "v1" });
@@ -36,6 +57,7 @@ builder.Host.UseSerilog((context, configuration) =>
 var app = builder.Build();
 
 app.UseSwagger();
+
 app.UseSwaggerUI(_ =>
 {
     _.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity_API");
@@ -44,6 +66,10 @@ app.UseSwaggerUI(_ =>
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(CORS_POLICY);
 
 app.UseAuthentication();
 

@@ -2,12 +2,11 @@
 {
     public class AccountController : Controller
     {
-
-        [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        //[HttpGet]
+        //public IActionResult Login()
+        //{
+        //    return View();
+        //}
 
         //[HttpPost]
         //public IActionResult Login(string? returnUrl = null)
@@ -18,19 +17,22 @@
         //    return View(loginDto);
         //}
 
-        //[HttpGet]
-        //public IActionResult Register()
-        //{
-        //    return View(); 
-        //}
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
 
         //[HttpPost]
-        //public IActionResult Register(string? returnUrl = null)
+        //public IActionResult Register(RegisterViewModel registerVM)
         //{
-        //    RegisterDto registerDto = new();
-        //    registerDto.ReturnUrl = returnUrl;
-
-        //    return LocalRedirect(returnUrl); 
+        //    var data = new
+        //    {
+        //        Email = registerVM.Email,
+        //        UserName = registerVM.UserName,
+        //        Password = registerVM.Password
+        //    };
+        //    return View(data);
         //}
     }
 }
