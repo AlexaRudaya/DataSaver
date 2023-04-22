@@ -31,12 +31,15 @@
         {
         }
 
-        public Link(int categoryId, int topicId, string? name, 
+        public Link(int categoryId, int topicId, string? name,
+            string? previewImage, string? previewTitle,
             string? description, string? urlLink)
         {
             CategoryId = categoryId;
             TopicId = topicId;
             Name = name;
+            PreviewImage = previewImage;
+            PreviewTitle = previewTitle;
             Description = description;
             UrlLink = urlLink;
         }
