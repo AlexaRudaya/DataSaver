@@ -1,20 +1,18 @@
-﻿const apiUrl = 'https://localhost:7059/api/Accounts/Register';
+﻿async function redirectToPage() {
+    window.location.href = await '/Link/Index';
+}
 
-console.log('register function called')
+const apiUrl = 'https://localhost:7059/api/Accounts/Register';
 
 const register = async () => {
-    console.log('register() called');
 
     const form = document.querySelector('form');
-    console.log(form);
 
     const data = {
         Email: document.getElementById("Email").value,
         UserName: document.getElementById("UserName").value,
         Password: document.getElementById("Password").value
     };
-
-    console.log(data);
 
     console.log('Data to be sent:', JSON.stringify(data));
 
@@ -29,12 +27,9 @@ const register = async () => {
         if (response.ok) {
             form.reset();
             alert("Registration was successful!");
+            redirectToPage();
         }
         else {
-            alert("Registration failed! Try again or contact admin.");
+            alert("Registration failed! Try again or contact administrator.");
         }
 };
-
-document.querySelector('.btn-primary').addEventListener('click', async () => {
-    await register();
-});
