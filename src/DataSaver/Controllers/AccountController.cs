@@ -22,17 +22,5 @@
         {
             return View();
         }
-
-        //[HttpPost]
-        //public IActionResult Register(RegisterViewModel registerVM)
-        //{
-        //    var data = new
-        //    {
-        //        Email = registerVM.Email,
-        //        UserName = registerVM.UserName,
-        //        Password = registerVM.Password
-        //    };
-        //    return View(data);
-        //}
     }
 }
