@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace DataSaver
+﻿namespace DataSaver
 {
     public static class Constants
     {

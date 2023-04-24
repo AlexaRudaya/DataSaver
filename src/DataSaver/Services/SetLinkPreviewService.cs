@@ -4,6 +4,7 @@
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly string _apiKey;
+        private readonly string _apiUrl;
         private readonly ILogger<SetLinkPreviewService> _logger;
 
         public SetLinkPreviewService(IHttpClientFactory httpClientFactory,
@@ -12,6 +13,7 @@
         {
             _httpClientFactory = httpClientFactory;
             _apiKey = options.Value.ApiKey!;
+            _apiUrl = options.Value.ApiUrl!;
             _logger = logger;
         }
 
@@ -19,43 +21,26 @@
         /// Sets the preview image and title for a given link using external LinkPreview API.
         /// </summary>
         /// <param name="link">The link for which to set a preview.</param>
-        /// <returns>The updated view model of a link with preview data.</returns>
-        /// <exception cref="InvalidOperationException">If the API request fails after 10 attempts.</exception>
+        /// <returns>The Task.</returns>
         /// <remarks>
         /// If the request to API is successful, response is deserialized => updates the provided link with the preview data.
-        /// If the request fails, it retries up to 10 times.
-        /// If the request fails after 10 attempts, throws an InvalidOperationException.
         /// </remarks>>
         public async Task SetLinkPreviewAsync(LinkViewModel link)
         {
             var httpClient = _httpClientFactory.CreateClient();
 
-            int attempts = default;
+            var response = await httpClient.GetAsync($"{_apiUrl}?key={_apiKey}&q={link.UrlLink}");
 
-            while (true)
+            if (response.IsSuccessStatusCode)
             {
-                var response = await httpClient.GetAsync($"{_apiKey}{link.UrlLink}");
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<LinkPreview>(responseContent);
 
-                attempts++;
-
-                if (attempts == 10)
-                {
-                    throw new InvalidOperationException("The amount of attempts is 10, please, reload a page");
-                }
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<LinkPreview>(responseContent);
-
-                    link.PreviewTitle = result.Title!;
-                    link.PreviewImage = result.Image!;
-
-                    _logger.LogInformation($"{attempts} times loaded");
-                    break;
-                }
-
-                _logger.LogError(response.StatusCode.ToString());
+                link.PreviewTitle = result.Title!;
+                link.PreviewImage = result.Image!;
             }
+
+            _logger.LogError($"Couldn't create a preview for the link: {link.UrlLink}. Status code:" + response.StatusCode.ToString());
         }
     }
 }
