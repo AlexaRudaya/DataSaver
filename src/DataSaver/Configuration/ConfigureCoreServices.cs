@@ -20,6 +20,16 @@ public static class ConfigureCoreServices
 
         #endregion
 
+        #region LinkPreview_API
+
+        services.AddHttpClient<ISetLinkPreviewService, SetLinkPreviewService>()
+                .AddTransientHttpErrorPolicy(_ => _.WaitAndRetryAsync(5, _ => TimeSpan.FromSeconds(2)))
+                .AddTransientHttpErrorPolicy(_ => _.CircuitBreakerAsync(5, TimeSpan.FromSeconds(5)));
+
+        services.Configure<LinkPreviewOptions>(configuration.GetSection("LinkPreview"));
+
+        #endregion
+
         #region Services
 
         services.AddControllersWithViews();
@@ -38,14 +48,5 @@ public static class ConfigureCoreServices
         services.AddSession();
 
         #endregion
-
-        #region HttpClient
-
-        services.AddHttpClient();
-
-        services.Configure<LinkPreviewOptions>(configuration.GetSection("LinkPreview"));
-
-        #endregion
-
     }
 }
