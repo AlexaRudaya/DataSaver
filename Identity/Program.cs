@@ -1,5 +1,3 @@
-//var CorsPolicy = "_corsPolicy";
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(_ =>
@@ -17,16 +15,6 @@ builder.Services.Configure<IdentityOptions>(_ =>
     _.Lockout.MaxFailedAccessAttempts = 5;
     _.SignIn.RequireConfirmedAccount = false;
 });
-
-//builder.Services.AddCors(options =>  
-//{
-//    options.AddPolicy("CorsPolicy", builder =>
-//    {
-//        builder.AllowAnyOrigin()
-//               .AllowAnyMethod()
-//               .AllowAnyHeader();
-//    });
-//});
 
 const string CORS_POLICY = "CorsPolicy";
 builder.Services.AddCors(options =>

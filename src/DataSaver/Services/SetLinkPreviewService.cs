@@ -39,8 +39,10 @@
                 link.PreviewTitle = result.Title!;
                 link.PreviewImage = result.Image!;
             }
-
-            _logger.LogError($"Couldn't create a preview for the link: {link.UrlLink}. Status code:" + response.StatusCode.ToString());
+            else
+            {
+                _logger.LogError($"Couldn't create a preview for the link: {link.UrlLink}. Status code:" + response.StatusCode.ToString());
+            }
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-using System.Linq.Expressions;
-
-namespace DataSaver.Infrastructure.Repositories
+﻿namespace DataSaver.Infrastructure.Repositories
 {
     public sealed class LinkRepository : BaseRepository<Link>, ILinkRepository
     {
@@ -25,6 +22,23 @@ namespace DataSaver.Infrastructure.Repositories
             {
                 query = include(query);
             } 
+
+            return await query.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<Link>> GetAllSortedAsync(
+            Func<IQueryable<Link>, IIncludableQueryable<Link, object>>? include = null, 
+            params Expression<Func<Link, object>>[] sortExpressions)
+        {
+            IQueryable<Link> query = _linkContext.Links;
+
+            var sortExpressionsList = sortExpressions.ToList();
+            sortExpressionsList.ForEach(_ => query = query.OrderBy(_));
+
+            if (include is not null)
+            {
+                query = include(query);
+            }
 
             return await query.AsNoTracking().ToListAsync();
         }
