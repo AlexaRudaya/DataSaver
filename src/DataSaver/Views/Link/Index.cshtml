@@ -54,13 +54,17 @@
                             Category
                         </dt>
                         <dd>
-                            @item.Category!.Name
+                            <a asp-action="Index" asp-route-sortOrder="category" asp-route-categoryId="@item.CategoryId">
+                                @item.Category?.Name
+                            </a>
                         </dd>
                         <dt>
                             Topic
                         </dt>
                         <dd>
-                            @item.Topic!.Name
+                            <a asp-action="Index" asp-route-sortOrder="topic" asp-route-topicId="@item.TopicId">
+                                @item.Topic?.Name
+                            </a>
                         </dd>
                         <dd class="columnUrl">
                             <a href=@item.UrlLink target="_blank">@item.UrlLink</a>

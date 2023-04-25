@@ -33,13 +33,13 @@
             return RedirectToAction(nameof(Index));
         }
 
-        /// <summary>
-        /// Displays the Index page.
-        /// </summary>
-        /// <param name="pageNumber">The page number to display, default - 1.</param>
-        /// <returns>The Index view.</returns>
+        ///// <summary>
+        ///// Displays the Index page.
+        ///// </summary>
+        ///// <param name="pageNumber">The page number to display, default - 1.</param>
+        ///// <returns>The Index view.</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int pageNumber = 1)
+        public async Task<IActionResult> Index(string? sortOrder, int? categoryId, int? topicId, int pageNumber = 1)
         {
             FilterViewModel viewModel = new();
 
@@ -71,6 +71,13 @@
                     viewModel.ResponseViewModel!.SearchTerm);
             }
 
+            viewModel.Links = await _linkService.SortedLinksAsync(categoryId, topicId, sortOrder);
+
+            //if (!string.IsNullOrEmpty(sortOrder))
+            //{
+            //    links = await _linkService.SortedLinksAsync(sortOrder, categoryId, topicId);
+            //}
+
             var count = links.Count();
             viewModel.PageViewModel = new(count, pageNumber);
             viewModel.Links = links.Skip((pageNumber - 1) * viewModel.PageViewModel.PageSize).Take(viewModel.PageViewModel.PageSize);
@@ -85,7 +92,7 @@
         /// <param name="pageNumber">The page number to display.</param>
         /// <returns>The redirection to the Index page with the filtered results.</returns>
         [HttpPost]
-        public IActionResult Index(FilterViewModel viewModel, int pageNumber = 1)
+        public async Task<IActionResult> Index(FilterViewModel viewModel, string? sortOrder, int pageNumber = 1)
         {
             ResponseViewModel responseViewModel = new()
             {
@@ -97,6 +104,13 @@
             string jsonFilter = JsonConvert.SerializeObject(responseViewModel);
 
             HttpContext.Session.SetString("Filter", jsonFilter);
+
+            //var links = await _linkService.GetAllAsync();
+
+            //if (!string.IsNullOrEmpty(sortOrder))
+            //{
+            //    links = await _linkService.SortedLinksAsync(sortOrder);
+            //}
 
             return RedirectToAction(nameof(Index), new {pageNumber});        
         }

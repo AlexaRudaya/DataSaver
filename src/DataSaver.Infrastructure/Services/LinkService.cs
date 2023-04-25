@@ -1,4 +1,7 @@
-﻿namespace DataSaver.Infrastructure.Services
+﻿using DataSaver.ApplicationCore.Entities;
+using DataSaver.Infrastructure.Data.Migrations;
+
+namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {
@@ -76,6 +79,7 @@
             {
                 expressions.Add(_ => _.TopicId.Equals(topicId));
             }
+
             if (!string.IsNullOrEmpty(search))
             {
                 expressions.Add(_ =>
@@ -103,6 +107,75 @@
             return linksViewModelList;
         }
 
+        public async Task<IEnumerable<LinkViewModel>> SortedLinksAsync(
+            int? categoryId = null,
+            int? topicId = null,
+            string? sortOrder = null)
+        {
+            var sortExpressions = new List<Expression<Func<Link, object>>>();
+
+            if (categoryId.HasValue)
+            {
+                sortExpressions.Add(_ => _.CategoryId.Equals(categoryId.Value));
+            }
+
+            if (topicId.HasValue)
+            {
+                sortExpressions.Add(_ => _.TopicId.Equals(topicId.Value));
+            }
+
+            //var links = await _linkRepository.GetAllAsync(
+            // include: query => query
+            //     .Include(_ => _.Category!)
+            //     .Include(_ => _.Topic!));
+
+            //if (categoryId.HasValue)
+            //{
+            //    links = links.Where(_ => _.CategoryId == categoryId.Value);
+            //}
+
+            //if (topicId.HasValue)
+            //{
+            //    links = links.Where(_ => _.TopicId == topicId.Value);
+            //}
+
+            //switch (sortOrder!.ToLower())
+            //{
+            //    case "category":
+            //        links = links.OrderByDescending(_ => _.Category!.Name).ToList();
+            //        break;
+            //    case "topic":
+            //        links = links.OrderByDescending(_ => _.Topic!.Name).ToList();
+            //        break;
+            //    default:
+            //        links = links.OrderByDescending(_ => _.Category!.Name).ToList();
+            //        break;
+            //}
+
+            switch (sortOrder?.ToLower())
+            {
+                case "category":
+                    sortExpressions.Add(_ => _.Category!.Name);
+                    break;
+                case "topic":
+                    sortExpressions.Add(_ => _.Topic!.Name);
+                    break;
+                default:
+                    sortExpressions.Add(_ => _.Category!.Name);
+                    break;
+            }
+
+            var links = await _linkRepository.GetAllSortedAsync(
+                include: query => query
+                    .Include(_ => _.Category)
+                    .Include(_ => _.Topic)!,
+                sortExpressions.ToArray());
+
+            var linksViewModelList = _mapper.Map<IEnumerable<LinkViewModel>>(links);
+
+            return linksViewModelList;
+        }
+
         /// <summary>
         /// Gets the list of all links.
         /// </summary>
@@ -111,6 +184,7 @@
         public async Task<IEnumerable<LinkViewModel>> GetAllAsync()
         {
             var linksList = await _linkRepository.GetAllAsync(
+
               include: query => query
                   .Include(_ => _.Category!)
                   .Include(_ => _.Topic!));
@@ -173,6 +247,6 @@
             await _linkRepository.UpdateAsync(link);
 
             return linkViewModel;
-        } 
+        }
     }
 }
