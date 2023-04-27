@@ -1,7 +1,4 @@
-﻿using DataSaver.ApplicationCore.Entities;
-using DataSaver.Infrastructure.Data.Migrations;
-
-namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {
@@ -36,7 +33,7 @@ namespace DataSaver.Infrastructure.Services
         {
             var link = _mapper.Map<Link>(linkViewModel);
 
-            link.DateCreated = DateTime.Now;
+            link.DateCreated = DateTime.UtcNow;
 
             await _linkRepository.CreateAsync(link);
 
@@ -112,16 +109,16 @@ namespace DataSaver.Infrastructure.Services
             int? topicId = null,
             string? sortOrder = null)
         {
-            var sortExpressions = new List<Expression<Func<Link, object>>>();
+            var filterExpressions = new List<Expression<Func<Link, object>>>();
 
             if (categoryId.HasValue)
             {
-                sortExpressions.Add(_ => _.CategoryId.Equals(categoryId.Value));
+                filterExpressions.Add(_ => _.CategoryId.Equals(categoryId.Value));
             }
 
             if (topicId.HasValue)
             {
-                sortExpressions.Add(_ => _.TopicId.Equals(topicId.Value));
+                filterExpressions.Add(_ => _.TopicId.Equals(topicId.Value));
             }
 
             //var links = await _linkRepository.GetAllAsync(
@@ -152,24 +149,26 @@ namespace DataSaver.Infrastructure.Services
             //        break;
             //}
 
+            Expression<Func<Link, object>> sortExpression;
+
             switch (sortOrder?.ToLower())
             {
                 case "category":
-                    sortExpressions.Add(_ => _.Category!.Name);
+                    sortExpression = _ => _.Category!.Name;
                     break;
                 case "topic":
-                    sortExpressions.Add(_ => _.Topic!.Name);
+                    sortExpression = _ => _.Topic!.Name;
                     break;
                 default:
-                    sortExpressions.Add(_ => _.Category!.Name);
+                    sortExpression = _ => _.Category!.Name;
                     break;
             }
 
             var links = await _linkRepository.GetAllSortedAsync(
                 include: query => query
-                    .Include(_ => _.Category)
-                    .Include(_ => _.Topic)!,
-                sortExpressions.ToArray());
+                    .Include(_ => _.Category!)
+                    .Include(_ => _.Topic!),
+                sortExpression);
 
             var linksViewModelList = _mapper.Map<IEnumerable<LinkViewModel>>(links);
 

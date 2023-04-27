@@ -45,7 +45,7 @@
 
             var categories = await _categoryService.GetAllAsync();
             var topics = await _topicService.GetAllAsync();
-            var links = await _linkService.GetAllAsync();
+            //var links = await _linkService.GetAllAsync();
 
             viewModel.CategoriesList = categories.Select(_ => new SelectListItem
             {
@@ -65,22 +65,36 @@
             {
                 viewModel.ResponseViewModel = JsonConvert.DeserializeObject<ResponseViewModel>(jsonFilter);
 
-                links = await _linkService.GetAllByFilterAsync(
+                /*links*/ viewModel.Links= await _linkService.GetAllByFilterAsync(
                     viewModel.ResponseViewModel!.CategoryId,
                     viewModel.ResponseViewModel!.TopicId,
                     viewModel.ResponseViewModel!.SearchTerm);
             }
+            else
+            {
+                //viewModel.Links = await _linkService.GetAllAsync();
+                viewModel.Links = await _linkService.SortedLinksAsync(categoryId, topicId, sortOrder);
+            }
 
-            viewModel.Links = await _linkService.SortedLinksAsync(categoryId, topicId, sortOrder);
+            if (categoryId.HasValue)
+            {
+                viewModel.Links = viewModel.Links.Where(_ => _.CategoryId == categoryId.Value);
+            }
 
-            //if (!string.IsNullOrEmpty(sortOrder))
-            //{
-            //    links = await _linkService.SortedLinksAsync(sortOrder, categoryId, topicId);
-            //}
+            if (topicId.HasValue)
+            {
+                viewModel.Links = viewModel.Links.Where(_ => _.TopicId == topicId.Value);
+            }
 
-            var count = links.Count();
+            if (!string.IsNullOrEmpty(sortOrder))
+            {
+                viewModel.Links = await _linkService.SortedLinksAsync(categoryId, topicId, sortOrder);
+            }
+
+
+            var count = /*links.Count();*/ viewModel.Links.Count();
             viewModel.PageViewModel = new(count, pageNumber);
-            viewModel.Links = links.Skip((pageNumber - 1) * viewModel.PageViewModel.PageSize).Take(viewModel.PageViewModel.PageSize);
+            viewModel.Links = /*links*/viewModel.Links.Skip((pageNumber - 1) * viewModel.PageViewModel.PageSize).Take(viewModel.PageViewModel.PageSize);
 
             return View(viewModel);
         }
@@ -92,7 +106,7 @@
         /// <param name="pageNumber">The page number to display.</param>
         /// <returns>The redirection to the Index page with the filtered results.</returns>
         [HttpPost]
-        public async Task<IActionResult> Index(FilterViewModel viewModel, string? sortOrder, int pageNumber = 1)
+        public async Task<IActionResult> Index(FilterViewModel viewModel, int pageNumber = 1)
         {
             ResponseViewModel responseViewModel = new()
             {
@@ -104,13 +118,6 @@
             string jsonFilter = JsonConvert.SerializeObject(responseViewModel);
 
             HttpContext.Session.SetString("Filter", jsonFilter);
-
-            //var links = await _linkService.GetAllAsync();
-
-            //if (!string.IsNullOrEmpty(sortOrder))
-            //{
-            //    links = await _linkService.SortedLinksAsync(sortOrder);
-            //}
 
             return RedirectToAction(nameof(Index), new {pageNumber});        
         }

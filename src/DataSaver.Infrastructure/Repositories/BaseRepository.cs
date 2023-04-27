@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-
-namespace DataSaver.Infrastructure.Repositories
+﻿namespace DataSaver.Infrastructure.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseModel
     {
@@ -26,7 +24,14 @@ namespace DataSaver.Infrastructure.Repositories
             return await query.AsNoTracking().ToListAsync();
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<IEnumerable<T>> GetAllByAsync(Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,         
+            Expression<Func<Link, bool>> expression,
+            params Expression<Func<Link, bool>>[] expressions)
+        { 
+              
+        }
+
+        public async Task<T?> GetByIdAsync(int id)   // EDIT
         {
             return await _table.AsNoTracking().FirstAsync(_=>_.Id.Equals(id));
         }
