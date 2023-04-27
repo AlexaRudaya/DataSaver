@@ -2,6 +2,8 @@
 
 namespace DataSaver.Middlewares
 {
+#pragma warning disable CS1591 //Missing XML comments 
+
     public sealed class GlobalExceptionHandlingMiddleware : IMiddleware
     {
         private readonly ILogger<GlobalExceptionHandlingMiddleware> _logger;

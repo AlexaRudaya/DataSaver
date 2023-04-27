@@ -1,22 +1,18 @@
-﻿namespace DataSaver.Infrastructure.Services
+﻿using DataSaver.ApplicationCore.Entities;
+
+namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {
         private readonly ILinkRepository _linkRepository;
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ITopicRepository _topicRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<LinkService> _logger;
 
-        public LinkService(ILinkRepository linkRepository,
-                ICategoryRepository categoryRepository,
-                ITopicRepository topicRepository,
+        public LinkService(ILinkRepository linkRepository, 
                 IMapper mapper,
                 ILogger<LinkService> logger)
         {
             _linkRepository = linkRepository;
-            _categoryRepository = categoryRepository;
-            _topicRepository = topicRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -67,12 +63,12 @@
         {
             var expressions = new List<Expression<Func<Link, bool>>>();
 
-            if (categoryId is not null && categoryId != 0)
+            if (categoryId is not null && categoryId is not 0)
             {
                 expressions.Add(_ => _.CategoryId.Equals(categoryId));
             }
 
-            if (topicId is not null && topicId != 0)
+            if (topicId is not null && topicId is not 0)
             {
                 expressions.Add(_ => _.TopicId.Equals(topicId));
             }
@@ -104,75 +100,63 @@
             return linksViewModelList;
         }
 
-        public async Task<IEnumerable<LinkViewModel>> SortedLinksAsync(
-            int? categoryId = null,
-            int? topicId = null,
-            string? sortOrder = null)
+        public async Task<IEnumerable<LinkViewModel>> GetAllBySortAsync(
+            int? sortOrderId,
+            string? sortOrder)
         {
-            var filterExpressions = new List<Expression<Func<Link, object>>>();
+#pragma warning disable CS8602
+#pragma warning disable CS8619
 
-            if (categoryId.HasValue)
+            IEnumerable<Link> sortedLinks = new List<Link>();
+            IEnumerable<Link> priorityLinks = new List<Link>();
+            IEnumerable<Link> otherLinks = new List<Link>();
+
+            if (sortOrder.ToUpper().Equals("category".ToUpper()))
             {
-                filterExpressions.Add(_ => _.CategoryId.Equals(categoryId.Value));
-            }
-
-            if (topicId.HasValue)
-            {
-                filterExpressions.Add(_ => _.TopicId.Equals(topicId.Value));
-            }
-
-            //var links = await _linkRepository.GetAllAsync(
-            // include: query => query
-            //     .Include(_ => _.Category!)
-            //     .Include(_ => _.Topic!));
-
-            //if (categoryId.HasValue)
-            //{
-            //    links = links.Where(_ => _.CategoryId == categoryId.Value);
-            //}
-
-            //if (topicId.HasValue)
-            //{
-            //    links = links.Where(_ => _.TopicId == topicId.Value);
-            //}
-
-            //switch (sortOrder!.ToLower())
-            //{
-            //    case "category":
-            //        links = links.OrderByDescending(_ => _.Category!.Name).ToList();
-            //        break;
-            //    case "topic":
-            //        links = links.OrderByDescending(_ => _.Topic!.Name).ToList();
-            //        break;
-            //    default:
-            //        links = links.OrderByDescending(_ => _.Category!.Name).ToList();
-            //        break;
-            //}
-
-            Expression<Func<Link, object>> sortExpression;
-
-            switch (sortOrder?.ToLower())
-            {
-                case "category":
-                    sortExpression = _ => _.Category!.Name;
-                    break;
-                case "topic":
-                    sortExpression = _ => _.Topic!.Name;
-                    break;
-                default:
-                    sortExpression = _ => _.Category!.Name;
-                    break;
-            }
-
-            var links = await _linkRepository.GetAllSortedAsync(
+                var links=await _linkRepository.GetAllByAsync(
                 include: query => query
-                    .Include(_ => _.Category!)
-                    .Include(_ => _.Topic!),
-                sortExpression);
+                    .Include(_ => _.Category)
+                    .Include(_ => _.Topic),
+                expression: _=>_.CategoryId.Equals(sortOrderId));
 
-            var linksViewModelList = _mapper.Map<IEnumerable<LinkViewModel>>(links);
+                priorityLinks=links.OrderBy(_=>_.Topic.Name).ThenBy(_=>_.Name);
 
-            return linksViewModelList;
+                links = await _linkRepository.GetAllByAsync(
+                include: query => query
+                    .Include(_ => _.Category)
+                    .Include(_ => _.Topic),
+                expression: _ => !_.CategoryId.Equals(sortOrderId));
+
+                otherLinks = links.OrderBy(_ => _.Topic.Name).ThenBy(_ => _.Name);
+            }
+
+            else
+            {
+                var links = await _linkRepository.GetAllByAsync(
+                include: query => query
+                    .Include(_ => _.Category)
+                    .Include(_ => _.Topic),
+                expression: _ => _.TopicId.Equals(sortOrderId));
+
+                priorityLinks=links.OrderBy(_ => _.Category.Name).ThenBy(_ => _.Name);
+
+                links = await _linkRepository.GetAllByAsync(
+                include: query => query
+                    .Include(_ => _.Category)
+                    .Include(_ => _.Topic),
+                expression: _ => !_.CategoryId.Equals(sortOrderId));
+
+                otherLinks = links.OrderBy(_ => _.Category.Name).ThenBy(_ => _.Name);
+            }
+
+            var sortedLinksList=sortedLinks.ToList();
+
+            sortedLinksList.AddRange(priorityLinks);
+            sortedLinksList.AddRange(otherLinks);
+
+            var linkViewModelsList = _mapper.Map<IEnumerable<LinkViewModel>>(sortedLinksList);
+
+            return linkViewModelsList;
         }
 
         /// <summary>
@@ -182,8 +166,7 @@
         /// <exception cref="LinkNotFoundException">Thrown when no links were found.</exception>
         public async Task<IEnumerable<LinkViewModel>> GetAllAsync()
         {
-            var linksList = await _linkRepository.GetAllAsync(
-
+            var linksList = await _linkRepository.GetAllByAsync(
               include: query => query
                   .Include(_ => _.Category!)
                   .Include(_ => _.Topic!));
@@ -209,9 +192,13 @@
         /// <exception cref="LinkNotFoundException">Thrown when there is no link with such ID.</exception>
         public async Task<LinkViewModel> GetByIdAsync(int linkId)
         {
-            var entity = await _linkRepository.GetByIdAsync(linkId);    
+            var entity = await _linkRepository.GetOneByAsync(
+                include: query => query
+                    .Include(_ => _.Category)
+                    .Include(_ => _.Topic),
+                expression: _=>_.Id.Equals(linkId));    
 
-            if (entity == null) 
+            if (entity is null) 
             {
                 var exception = new LinkNotFoundException($"No link with id: {linkId} was found");
                 _logger.LogError(exception, exception.Message);
@@ -219,13 +206,7 @@
                 throw exception;
             }
 
-            var linkViewModel = _mapper.Map<LinkViewModel>(entity);
-
-            var category = await _categoryRepository.GetByIdAsync(linkViewModel.CategoryId);
-            var topic = await _topicRepository.GetByIdAsync(linkViewModel.TopicId);
-
-            linkViewModel.Category = category;
-            linkViewModel.Topic = topic;
+            var linkViewModel = _mapper.Map<LinkViewModel>(entity);      
 
             return linkViewModel;   
         }
@@ -239,7 +220,12 @@
         {
             var link = _mapper.Map<Link>(linkViewModel);
 
-            var modelFromDb = await _linkRepository.GetByIdAsync(link.Id);
+            var modelFromDb = await _linkRepository.GetOneByAsync(
+                include: query => query
+                    .Include(_ => _.Category)
+                .Include(_ => _.Topic),
+                expression: _ => _.Id.Equals(link.Id));
+
             var modelFromDbCreated = modelFromDb!.DateCreated;
             link.DateCreated = modelFromDbCreated;
 

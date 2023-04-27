@@ -9,7 +9,12 @@
             _linkContext = linkContext;
         }
 
-        //public async Task<IEnumerable<Link>> GetAllByFilterAsync(
+
+
+
+
+
+        /*//public async Task<IEnumerable<Link>> GetAllByFilterAsync(
         //    Func<IQueryable<Link>, IIncludableQueryable<Link, object>>? include = null,
         //    params Expression<Func<Link, bool>>[] expressions)
         //{
@@ -42,6 +47,12 @@
 
             return await query.AsNoTracking().ToListAsync();
         }
+
+
+
+
+
+
         private IQueryable<Link> GetAllByFilterAsync(
            Func<IQueryable<Link>, IIncludableQueryable<Link, object>>? include = null,
            params Expression<Func<Link, bool>>[] expressions)
@@ -73,7 +84,7 @@
             query = query.OrderBy(expression);          
            
             return query;
-        }
+        }*/
 
     }
 }

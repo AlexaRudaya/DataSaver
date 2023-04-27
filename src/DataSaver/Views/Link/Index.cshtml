@@ -54,7 +54,7 @@
                             Category
                         </dt>
                         <dd>
-                            <a asp-action="Index" asp-route-sortOrder="category" asp-route-categoryId="@item.CategoryId">
+                            <a asp-action="Index" asp-route-sortOrder="category" asp-route-sortOrderId="@item.CategoryId">
                                 @item.Category?.Name
                             </a>
                         </dd>
@@ -62,7 +62,7 @@
                             Topic
                         </dt>
                         <dd>
-                            <a asp-action="Index" asp-route-sortOrder="topic" asp-route-topicId="@item.TopicId">
+                            <a asp-action="Index" asp-route-sortOrder="topic" asp-route-sortOrderId="@item.TopicId">
                                 @item.Topic?.Name
                             </a>
                         </dd>

@@ -39,13 +39,12 @@
         ///// <param name="pageNumber">The page number to display, default - 1.</param>
         ///// <returns>The Index view.</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(string? sortOrder, int? categoryId, int? topicId, int pageNumber = 1)
+        public async Task<IActionResult> Index(int?sortOrderId, string? sortOrder, int? categoryId, int? topicId, int pageNumber = 1)
         {
             FilterViewModel viewModel = new();
 
             var categories = await _categoryService.GetAllAsync();
             var topics = await _topicService.GetAllAsync();
-            //var links = await _linkService.GetAllAsync();
 
             viewModel.CategoriesList = categories.Select(_ => new SelectListItem
             {
@@ -65,32 +64,16 @@
             {
                 viewModel.ResponseViewModel = JsonConvert.DeserializeObject<ResponseViewModel>(jsonFilter);
 
-                /*links*/ viewModel.Links= await _linkService.GetAllByFilterAsync(
-                    viewModel.ResponseViewModel!.CategoryId,
-                    viewModel.ResponseViewModel!.TopicId,
-                    viewModel.ResponseViewModel!.SearchTerm);
-            }
-            else
-            {
-                //viewModel.Links = await _linkService.GetAllAsync();
-                viewModel.Links = await _linkService.SortedLinksAsync(categoryId, topicId, sortOrder);
-            }
+                if (sortOrderId is null)
+                {
+                    viewModel.Links= await _linkService.GetAllByFilterAsync(
+                        viewModel.ResponseViewModel!.CategoryId,
+                        viewModel.ResponseViewModel!.TopicId,
+                        viewModel.ResponseViewModel!.SearchTerm);
+                }
 
-            if (categoryId.HasValue)
-            {
-                viewModel.Links = viewModel.Links.Where(_ => _.CategoryId == categoryId.Value);
-            }
-
-            if (topicId.HasValue)
-            {
-                viewModel.Links = viewModel.Links.Where(_ => _.TopicId == topicId.Value);
-            }
-
-            if (!string.IsNullOrEmpty(sortOrder))
-            {
-                viewModel.Links = await _linkService.SortedLinksAsync(categoryId, topicId, sortOrder);
-            }
-
+                else viewModel.Links=await _linkService.GetAllBySortAsync(sortOrderId,sortOrder);   
+            }   
 
             var count = /*links.Count();*/ viewModel.Links.Count();
             viewModel.PageViewModel = new(count, pageNumber);

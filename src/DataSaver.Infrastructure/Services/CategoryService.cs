@@ -51,12 +51,12 @@
         /// <exception cref="CategoryNotFoundException">Thrown when no categories were found.</exception>
         public async Task<IEnumerable<CategoryViewModel>> GetAllAsync()
         {
-            var categoryList = await _categoryRepository.GetAllAsync();
+            var categoryList = await _categoryRepository.GetAllByAsync();
 
             if (categoryList == null)
             {
                 var exception = new CategoryNotFoundException("No categories were found");
-                _logger.LogError(exception, exception.Message);
+                _logger.LogError("{exception},{message}",exception, exception.Message);//TODO see handler
 
                 throw exception;
             }
@@ -74,9 +74,9 @@
         /// <exception cref="CategoryNotFoundException">Thrown when there is no category with such ID.</exception>
         public async Task<CategoryViewModel> GetByIdAsync(int categoryId)
         {
-            var entity = await _categoryRepository.GetByIdAsync(categoryId);
+            var entity = await _categoryRepository.GetOneByAsync(expression: _ => _.Id.Equals(categoryId));
 
-            if (entity == null)
+            if (entity is null)
             {
                 var exception = new CategoryNotFoundException($"No category with id: {categoryId} was found");
                 _logger.LogError(exception, exception.Message);
@@ -96,9 +96,13 @@
         /// <returns>The updated view model of a category.</returns>
         public async Task<CategoryViewModel> UpdateAsync(CategoryViewModel categoryViewModel)
         {
-            var category = _mapper.Map<Category>(categoryViewModel);
+            /*var modelFromDb = await _categoryRepository.GetOneByAsync(_ => _.Id.Equals(categoryViewModel.Id))
+                ?? throw new CategoryNotFoundException($"No category with id: {categoryViewModel.Id} was found");
+             var category = _mapper.Map<Category>(categoryViewModel);
+            //Log writed by handler*/
 
-            var modelFromDb = await _categoryRepository.GetByIdAsync(category.Id);
+            var category = _mapper.Map<Category>(categoryViewModel);
+            var modelFromDb = await _categoryRepository.GetOneByAsync(expression: _=>_.Id.Equals(category.Id));
             var modelFromDbCreated = modelFromDb!.DateCreated;
             category.DateCreated = modelFromDbCreated;
 

@@ -1,12 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-
-namespace DataSaver.ApplicationCore.Interfaces.IRepository
+﻿namespace DataSaver.ApplicationCore.Interfaces.IRepository
 {
     public interface IBaseRepository<T> where T : BaseModel
     {
-        public Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null);
+        public Task<IEnumerable<T>> GetAllByAsync(
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+            Expression<Func<T, bool>>? expression = null);
 
-        Task<T?> GetByIdAsync(int id);
+        public Task<IEnumerable<T>> GetAllByFilterAsync(
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+            params Expression<Func<T, bool>>[] expressions);
+
+        public Task<T> GetOneByAsync(
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
+            Expression<Func<T, bool>>? expression = null);
+
+        //Task<T?> GetByIdAsync(int id);
 
         public Task CreateAsync(T entity);
 
