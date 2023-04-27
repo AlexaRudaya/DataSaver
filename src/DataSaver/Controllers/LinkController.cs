@@ -39,12 +39,15 @@
         ///// <param name="pageNumber">The page number to display, default - 1.</param>
         ///// <returns>The Index view.</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int?sortOrderId, string? sortOrder, int? categoryId, int? topicId, int pageNumber = 1)
+        public async Task<IActionResult> Index(int? sortOrderId, string? sortOrder, int pageNumber = 1)
         {
             FilterViewModel viewModel = new();
 
             var categories = await _categoryService.GetAllAsync();
             var topics = await _topicService.GetAllAsync();
+
+            var links = await _linkService.GetAllAsync();
+            viewModel.Links = links;
 
             viewModel.CategoriesList = categories.Select(_ => new SelectListItem
             {
@@ -71,13 +74,19 @@
                         viewModel.ResponseViewModel!.TopicId,
                         viewModel.ResponseViewModel!.SearchTerm);
                 }
+                else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel.SortOrderId,
+                    viewModel.ResponseViewModel.SortOrder);
 
-                else viewModel.Links=await _linkService.GetAllBySortAsync(sortOrderId,sortOrder);   
-            }   
+            }
+            if (sortOrderId is not null)
+            {
+                viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
 
-            var count = /*links.Count();*/ viewModel.Links.Count();
+            }
+
+            var count = viewModel.Links!.Count();
             viewModel.PageViewModel = new(count, pageNumber);
-            viewModel.Links = /*links*/viewModel.Links.Skip((pageNumber - 1) * viewModel.PageViewModel.PageSize).Take(viewModel.PageViewModel.PageSize);
+            viewModel.Links = viewModel.Links!.Skip((pageNumber - 1) * viewModel.PageViewModel.PageSize).Take(viewModel.PageViewModel.PageSize);
 
             return View(viewModel);
         }
@@ -93,6 +102,8 @@
         {
             ResponseViewModel responseViewModel = new()
             {
+                SortOrderId = viewModel.ResponseViewModel!.SortOrderId,
+                SortOrder = viewModel.ResponseViewModel!.SortOrder,
                 CategoryId = viewModel.ResponseViewModel!.CategoryId,
                 TopicId = viewModel.ResponseViewModel!.TopicId,
                 SearchTerm = viewModel.ResponseViewModel!.SearchTerm,
