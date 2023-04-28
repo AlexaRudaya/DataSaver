@@ -14,8 +14,6 @@
             Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null,
             Expression<Func<T, bool>>? expression = null);
 
-        //Task<T?> GetByIdAsync(int id);
-
         public Task CreateAsync(T entity);
 
         public Task<T> UpdateAsync(T entity);

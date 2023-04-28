@@ -23,7 +23,7 @@
         {
             var category = _mapper.Map<Category>(categoryViewModel);
 
-            category.DateCreated = DateTime.Now;
+            category.DateCreated = DateTime.UtcNow;
 
             await _categoryRepository.CreateAsync(category);
 
@@ -53,11 +53,9 @@
         {
             var categoryList = await _categoryRepository.GetAllByAsync();
 
-            if (categoryList == null)
+            if (categoryList is null)
             {
                 var exception = new CategoryNotFoundException("No categories were found");
-                _logger.LogError("{exception},{message}",exception, exception.Message);//TODO see handler
-
                 throw exception;
             }
 
@@ -79,8 +77,6 @@
             if (entity is null)
             {
                 var exception = new CategoryNotFoundException($"No category with id: {categoryId} was found");
-                _logger.LogError(exception, exception.Message);
-
                 throw exception;
             }
 

@@ -1,6 +1,4 @@
-﻿using DataSaver.ApplicationCore.Entities;
-
-namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.Infrastructure.Services
 {
     public sealed class LinkService : ILinkService
     {
@@ -111,15 +109,17 @@ namespace DataSaver.Infrastructure.Services
             IEnumerable<Link> priorityLinks = new List<Link>();
             IEnumerable<Link> otherLinks = new List<Link>();
 
-            if (sortOrder.ToUpper().Equals("category".ToUpper()))
+            if (sortOrder.ToUpper().Equals(Constants.Category.ToUpper()))
             {
-                var links=await _linkRepository.GetAllByAsync(
+                var links = await _linkRepository.GetAllByAsync(
                 include: query => query
                     .Include(_ => _.Category)
                     .Include(_ => _.Topic),
-                expression: _=>_.CategoryId.Equals(sortOrderId));
+                expression: _ =>_.CategoryId.Equals(sortOrderId));
 
-                priorityLinks=links.OrderBy(_=>_.Topic.Name).ThenBy(_=>_.Name);
+                priorityLinks = links
+                                   .OrderBy(_=>_.Topic.Name)
+                                   .ThenBy(_=>_.Name);
 
                 links = await _linkRepository.GetAllByAsync(
                 include: query => query
@@ -127,9 +127,11 @@ namespace DataSaver.Infrastructure.Services
                     .Include(_ => _.Topic),
                 expression: _ => !_.CategoryId.Equals(sortOrderId));
 
-                otherLinks = links.OrderBy(_ => _.Topic.Name).ThenBy(_ => _.Name);
+                otherLinks = links
+                                /*.Where(_ => !priorityLinks.Contains()*///.Except(priorityLinks) is not working!
+                                .OrderBy(_ => _.Topic.Name)
+                                .ThenBy(_ => _.Name);
             }
-
             else
             {
                 var links = await _linkRepository.GetAllByAsync(
@@ -138,7 +140,9 @@ namespace DataSaver.Infrastructure.Services
                     .Include(_ => _.Topic),
                 expression: _ => _.TopicId.Equals(sortOrderId));
 
-                priorityLinks=links.OrderBy(_ => _.Category.Name).ThenBy(_ => _.Name);
+                priorityLinks = links
+                                   .OrderBy(_ => _.Category.Name)
+                                   .ThenBy(_ => _.Name);
 
                 links = await _linkRepository.GetAllByAsync(
                 include: query => query
@@ -146,7 +150,9 @@ namespace DataSaver.Infrastructure.Services
                     .Include(_ => _.Topic),
                 expression: _ => !_.CategoryId.Equals(sortOrderId));
 
-                otherLinks = links.OrderBy(_ => _.Category.Name).ThenBy(_ => _.Name);
+                otherLinks = links
+                                .OrderBy(_ => _.Category.Name)
+                                .ThenBy(_ => _.Name);
             }
 
             var sortedLinksList=sortedLinks.ToList();
@@ -171,11 +177,9 @@ namespace DataSaver.Infrastructure.Services
                   .Include(_ => _.Category!)
                   .Include(_ => _.Topic!));
 
-            if (linksList == null)
+            if (linksList is null)
             {
                 var exception = new LinkNotFoundException("No links were found");
-                _logger.LogError(exception, exception.Message);
-
                 throw exception;
             }
 
@@ -201,8 +205,6 @@ namespace DataSaver.Infrastructure.Services
             if (entity is null) 
             {
                 var exception = new LinkNotFoundException($"No link with id: {linkId} was found");
-                _logger.LogError(exception, exception.Message);
-
                 throw exception;
             }
 

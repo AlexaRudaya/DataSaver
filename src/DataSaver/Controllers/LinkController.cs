@@ -74,15 +74,25 @@
                         viewModel.ResponseViewModel!.TopicId,
                         viewModel.ResponseViewModel!.SearchTerm);
                 }
-                else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel.SortOrderId,
-                    viewModel.ResponseViewModel.SortOrder);
-
+                //else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel!.SortOrderId,
+                //    viewModel.ResponseViewModel.SortOrder); remove it? it causes NRE 
             }
-            if (sortOrderId is not null)
+
+            if (sortOrder is not null)
             {
-                viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
-
+                HttpContext.Session.SetString("SortOrder", sortOrder);
             }
+
+            var storedSortOrder = HttpContext.Session.GetString("SortOrder");
+
+            if (sortOrderId is not null || !string.IsNullOrEmpty(storedSortOrder))
+            {
+                viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, storedSortOrder);
+            }
+            //if (sortOrderId is not null)
+            //{
+            //    viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
+            //}
 
             var count = viewModel.Links!.Count();
             viewModel.PageViewModel = new(count, pageNumber);
@@ -113,7 +123,7 @@
 
             HttpContext.Session.SetString("Filter", jsonFilter);
 
-            return RedirectToAction(nameof(Index), new {pageNumber});        
+            return RedirectToAction(nameof(Index), new { pageNumber });    
         }
 
         /// <summary>

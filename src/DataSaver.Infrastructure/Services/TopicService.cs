@@ -23,7 +23,7 @@
         {
             var topic = _mapper.Map<Topic>(topicViewModel);
 
-            topic.DateCreated = DateTime.Now;
+            topic.DateCreated = DateTime.UtcNow;
             
             await _topicRepository.CreateAsync(topic);
 
@@ -53,11 +53,9 @@
         {
             var topicsList = await _topicRepository.GetAllByAsync();
 
-            if (topicsList == null)
+            if (topicsList is null)
             {
                 var exception = new TopicNotFoundException("No topics were found");
-                _logger.LogError(exception, exception.Message);
-
                 throw exception;
             }
 
@@ -76,11 +74,9 @@
         {
             var entity = await _topicRepository.GetOneByAsync(expression: _=>_.Id.Equals(topicId));
 
-            if (entity == null)
+            if (entity is null)
             {
                 var exception = new TopicNotFoundException($"No topic with id: {topicId} was found");
-                _logger.LogError(exception, exception.Message);
-
                 throw exception;
             }
 
