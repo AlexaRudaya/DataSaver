@@ -43,23 +43,10 @@
         {
             FilterViewModel viewModel = new();
 
+            #region Dropdowns
+
             var categories = await _categoryService.GetAllAsync();
             var topics = await _topicService.GetAllAsync();
-
-            #region Don't touch me
-
-            var links = await _linkService.GetAllAsync();
-            viewModel.Links = links;
-
-            #endregion
-
-            if (sortOrderId != null)
-            {
-                viewModel.ResponseViewModel.SortOrderId = sortOrderId;
-                viewModel.ResponseViewModel.SortOrder = sortOrder;
-
-                links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
-            }
 
             viewModel.CategoriesList = categories.Select(_ => new SelectListItem
             {
@@ -73,18 +60,31 @@
                 Text = _.Name
             });
 
-            string? jsonFilter = HttpContext.Session.GetString("Filter");
+            #endregion
+
+            #region Don't touch me
+
+            var links = await _linkService.GetAllAsync();
+            viewModel.Links = links;
+
+            #endregion
+
+            var jsonFilter = string.Empty;
+
+            if (sortOrderId is not null)
+            {
+                viewModel.ResponseViewModel.SortOrderId = sortOrderId;
+                viewModel.ResponseViewModel.SortOrder = sortOrder;
+
+                viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
+                jsonFilter=null;
+            }
+
+            else jsonFilter = HttpContext.Session.GetString("Filter");
 
             if (jsonFilter is not null)
             {
                 viewModel.ResponseViewModel = JsonConvert.DeserializeObject<ResponseViewModel>(jsonFilter);
-
-#pragma warning disable
-                if (viewModel.ResponseViewModel.SortOrderId is not null)
-                {
-                    viewModel.ResponseViewModel.CategoryId=null;
-                    viewModel.ResponseViewModel.TopicId=null;
-                } 
 
                 if (viewModel.ResponseViewModel.SortOrderId is null)
                 {
@@ -94,27 +94,8 @@
                         viewModel.ResponseViewModel!.SearchTerm);
                 }
 
-                else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel!.SortOrderId,
-                   viewModel.ResponseViewModel.SortOrder); //remove it? it causes NRE 
-            }
-
-
-
-            //if (sortOrder is not null)
-            //{
-            //    HttpContext.Session.SetString("SortOrder", sortOrder);
-            //}
-
-            //var storedSortOrder = HttpContext.Session.GetString("SortOrder");
-
-            //if (sortOrderId is not null || !string.IsNullOrEmpty(storedSortOrder))
-            //{
-            //    viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, storedSortOrder);
-            //}
-            //if (sortOrderId is not null)
-            //{
-            //    viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
-            //}
+                else viewModel.Links=await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel.SortOrderId, viewModel.ResponseViewModel.SortOrder);
+            }            
 
             var count = viewModel.Links!.Count();
             viewModel.PageViewModel = new(count, pageNumber);
