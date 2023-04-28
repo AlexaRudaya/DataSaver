@@ -128,7 +128,6 @@
                 expression: _ => !_.CategoryId.Equals(sortOrderId));
 
                 otherLinks = links
-                                /*.Where(_ => !priorityLinks.Contains()*///.Except(priorityLinks) is not working!
                                 .OrderBy(_ => _.Topic.Name)
                                 .ThenBy(_ => _.Name);
             }
@@ -148,14 +147,14 @@
                 include: query => query
                     .Include(_ => _.Category)
                     .Include(_ => _.Topic),
-                expression: _ => !_.CategoryId.Equals(sortOrderId));
+                expression: _ => !_.TopicId.Equals(sortOrderId));
 
                 otherLinks = links
                                 .OrderBy(_ => _.Category.Name)
                                 .ThenBy(_ => _.Name);
             }
 
-            var sortedLinksList=sortedLinks.ToList();
+            var sortedLinksList = sortedLinks.ToList();
 
             sortedLinksList.AddRange(priorityLinks);
             sortedLinksList.AddRange(otherLinks);

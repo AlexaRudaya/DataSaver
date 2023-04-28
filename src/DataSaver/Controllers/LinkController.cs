@@ -62,12 +62,9 @@
 
             #endregion
 
-            #region Don't touch me
-
             var links = await _linkService.GetAllAsync();
             viewModel.Links = links;
 
-            #endregion
 
             var jsonFilter = string.Empty;
 
@@ -77,7 +74,7 @@
                 viewModel.ResponseViewModel.SortOrder = sortOrder;
 
                 viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
-                jsonFilter=null;
+                jsonFilter = null;
             }
 
             else jsonFilter = HttpContext.Session.GetString("Filter");
@@ -94,7 +91,7 @@
                         viewModel.ResponseViewModel!.SearchTerm);
                 }
 
-                else viewModel.Links=await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel.SortOrderId, viewModel.ResponseViewModel.SortOrder);
+                else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel.SortOrderId, viewModel.ResponseViewModel.SortOrder);
             }            
 
             var count = viewModel.Links!.Count();
