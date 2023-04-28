@@ -39,15 +39,19 @@
         ///// <param name="pageNumber">The page number to display, default - 1.</param>
         ///// <returns>The Index view.</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int? sortOrderId, string? sortOrder, int pageNumber = 1)
+        public async Task<IActionResult> Index(int pageNumber = 1)
         {
             FilterViewModel viewModel = new();
 
             var categories = await _categoryService.GetAllAsync();
             var topics = await _topicService.GetAllAsync();
 
+            #region Don't touch me
+
             var links = await _linkService.GetAllAsync();
             viewModel.Links = links;
+
+            #endregion
 
             viewModel.CategoriesList = categories.Select(_ => new SelectListItem
             {
@@ -67,28 +71,38 @@
             {
                 viewModel.ResponseViewModel = JsonConvert.DeserializeObject<ResponseViewModel>(jsonFilter);
 
-                if (sortOrderId is null)
+#pragma warning disable
+                if (viewModel.ResponseViewModel.SortOrderId is not null)
+                {
+                    viewModel.ResponseViewModel.CategoryId=null;
+                    viewModel.ResponseViewModel.TopicId=null;
+                } 
+
+                if (viewModel.ResponseViewModel.SortOrderId is null)
                 {
                     viewModel.Links= await _linkService.GetAllByFilterAsync(
                         viewModel.ResponseViewModel!.CategoryId,
                         viewModel.ResponseViewModel!.TopicId,
                         viewModel.ResponseViewModel!.SearchTerm);
                 }
-                //else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel!.SortOrderId,
-                //    viewModel.ResponseViewModel.SortOrder); remove it? it causes NRE 
+
+                else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel!.SortOrderId,
+                   viewModel.ResponseViewModel.SortOrder); //remove it? it causes NRE 
             }
 
-            if (sortOrder is not null)
-            {
-                HttpContext.Session.SetString("SortOrder", sortOrder);
-            }
 
-            var storedSortOrder = HttpContext.Session.GetString("SortOrder");
 
-            if (sortOrderId is not null || !string.IsNullOrEmpty(storedSortOrder))
-            {
-                viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, storedSortOrder);
-            }
+            //if (sortOrder is not null)
+            //{
+            //    HttpContext.Session.SetString("SortOrder", sortOrder);
+            //}
+
+            //var storedSortOrder = HttpContext.Session.GetString("SortOrder");
+
+            //if (sortOrderId is not null || !string.IsNullOrEmpty(storedSortOrder))
+            //{
+            //    viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, storedSortOrder);
+            //}
             //if (sortOrderId is not null)
             //{
             //    viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
