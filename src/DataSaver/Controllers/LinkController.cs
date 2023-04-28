@@ -39,13 +39,14 @@
         ///// <param name="pageNumber">The page number to display, default - 1.</param>
         ///// <returns>The Index view.</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(string? sortOrder, int? categoryId, int? topicId, int pageNumber = 1)
+        public async Task<IActionResult> Index(int? sortOrderId, string? sortOrder, int pageNumber = 1)
         {
             FilterViewModel viewModel = new();
 
+            #region Dropdowns
+
             var categories = await _categoryService.GetAllAsync();
             var topics = await _topicService.GetAllAsync();
-            //var links = await _linkService.GetAllAsync();
 
             viewModel.CategoriesList = categories.Select(_ => new SelectListItem
             {
@@ -59,42 +60,43 @@
                 Text = _.Name
             });
 
-            string? jsonFilter = HttpContext.Session.GetString("Filter");
+            #endregion
+
+            var links = await _linkService.GetAllAsync();
+            viewModel.Links = links;
+
+
+            var jsonFilter = string.Empty;
+
+            if (sortOrderId is not null)
+            {
+                viewModel.ResponseViewModel.SortOrderId = sortOrderId;
+                viewModel.ResponseViewModel.SortOrder = sortOrder;
+
+                viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
+                jsonFilter = null;
+            }
+
+            else jsonFilter = HttpContext.Session.GetString("Filter");
 
             if (jsonFilter is not null)
             {
                 viewModel.ResponseViewModel = JsonConvert.DeserializeObject<ResponseViewModel>(jsonFilter);
 
-                /*links*/ viewModel.Links= await _linkService.GetAllByFilterAsync(
-                    viewModel.ResponseViewModel!.CategoryId,
-                    viewModel.ResponseViewModel!.TopicId,
-                    viewModel.ResponseViewModel!.SearchTerm);
-            }
-            else
-            {
-                //viewModel.Links = await _linkService.GetAllAsync();
-                viewModel.Links = await _linkService.SortedLinksAsync(categoryId, topicId, sortOrder);
-            }
+                if (viewModel.ResponseViewModel.SortOrderId is null)
+                {
+                    viewModel.Links= await _linkService.GetAllByFilterAsync(
+                        viewModel.ResponseViewModel!.CategoryId,
+                        viewModel.ResponseViewModel!.TopicId,
+                        viewModel.ResponseViewModel!.SearchTerm);
+                }
 
-            if (categoryId.HasValue)
-            {
-                viewModel.Links = viewModel.Links.Where(_ => _.CategoryId == categoryId.Value);
-            }
+                else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel.SortOrderId, viewModel.ResponseViewModel.SortOrder);
+            }            
 
-            if (topicId.HasValue)
-            {
-                viewModel.Links = viewModel.Links.Where(_ => _.TopicId == topicId.Value);
-            }
-
-            if (!string.IsNullOrEmpty(sortOrder))
-            {
-                viewModel.Links = await _linkService.SortedLinksAsync(categoryId, topicId, sortOrder);
-            }
-
-
-            var count = /*links.Count();*/ viewModel.Links.Count();
+            var count = viewModel.Links!.Count();
             viewModel.PageViewModel = new(count, pageNumber);
-            viewModel.Links = /*links*/viewModel.Links.Skip((pageNumber - 1) * viewModel.PageViewModel.PageSize).Take(viewModel.PageViewModel.PageSize);
+            viewModel.Links = viewModel.Links!.Skip((pageNumber - 1) * viewModel.PageViewModel.PageSize).Take(viewModel.PageViewModel.PageSize);
 
             return View(viewModel);
         }
@@ -110,6 +112,8 @@
         {
             ResponseViewModel responseViewModel = new()
             {
+                SortOrderId = viewModel.ResponseViewModel!.SortOrderId,
+                SortOrder = viewModel.ResponseViewModel!.SortOrder,
                 CategoryId = viewModel.ResponseViewModel!.CategoryId,
                 TopicId = viewModel.ResponseViewModel!.TopicId,
                 SearchTerm = viewModel.ResponseViewModel!.SearchTerm,
@@ -119,7 +123,7 @@
 
             HttpContext.Session.SetString("Filter", jsonFilter);
 
-            return RedirectToAction(nameof(Index), new {pageNumber});        
+            return RedirectToAction(nameof(Index), new { pageNumber });    
         }
 
         /// <summary>

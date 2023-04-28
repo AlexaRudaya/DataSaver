@@ -54,7 +54,7 @@
                             Category
                         </dt>
                         <dd>
-                            <a asp-action="Index" asp-route-sortOrder="category" asp-route-categoryId="@item.CategoryId">
+                            <a asp-action="Index" asp-route-sortOrder="category" asp-route-sortOrderId="@item.CategoryId">
                                 @item.Category?.Name
                             </a>
                         </dd>
@@ -62,7 +62,7 @@
                             Topic
                         </dt>
                         <dd>
-                            <a asp-action="Index" asp-route-sortOrder="topic" asp-route-topicId="@item.TopicId">
+                            <a asp-action="Index" asp-route-sortOrder="topic" asp-route-sortOrderId="@item.TopicId">
                                 @item.Topic?.Name
                             </a>
                         </dd>
@@ -93,8 +93,10 @@
         {
             <a asp-action="Index"
            asp-route-pageNumber="@(Model.PageViewModel.PageNumber - 1)"
-           asp-route-CategoryId="@Model.ResponseViewModel!.CategoryId"
-           asp-route-TopicId="@Model.ResponseViewModel.TopicId"
+           asp-route-tategoryId="@Model.ResponseViewModel!.CategoryId"
+           asp-route-topicId="@Model.ResponseViewModel.TopicId"
+           asp-route-sortOrderId="@Model.ResponseViewModel.SortOrderId"
+           asp-route-sortOrder="@Model.ResponseViewModel.SortOrder"
                class="btn btn-outline-dark">
                 <i class="fa-solid fa-left-long"></i>
             </a>
@@ -103,8 +105,10 @@
         {
             <a asp-action="Index"
            asp-route-pageNumber="@(Model.PageViewModel.PageNumber + 1)"
-           asp-route-CategoryId="@Model.ResponseViewModel!.CategoryId"
-           asp-route-TopicId="@Model.ResponseViewModel.TopicId"
+           asp-route-categoryId="@Model.ResponseViewModel!.CategoryId"
+           asp-route-topicId="@Model.ResponseViewModel.TopicId"
+           asp-route-sortOrderId="@Model.ResponseViewModel.SortOrderId"
+           asp-route-sortOrder="@Model.ResponseViewModel.SortOrder"
                class="btn btn-outline-dark">
                 <i class="fa-solid fa-right-long"></i>
             </a>

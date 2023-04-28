@@ -23,7 +23,7 @@
         {
             var topic = _mapper.Map<Topic>(topicViewModel);
 
-            topic.DateCreated = DateTime.Now;
+            topic.DateCreated = DateTime.UtcNow;
             
             await _topicRepository.CreateAsync(topic);
 
@@ -51,13 +51,11 @@
         /// <exception cref="TopicNotFoundException">Thrown when no topics were found.</exception>
         public async Task<IEnumerable<TopicViewModel>> GetAllAsync()
         {
-            var topicsList = await _topicRepository.GetAllAsync();
+            var topicsList = await _topicRepository.GetAllByAsync();
 
-            if (topicsList == null)
+            if (topicsList is null)
             {
                 var exception = new TopicNotFoundException("No topics were found");
-                _logger.LogError(exception, exception.Message);
-
                 throw exception;
             }
 
@@ -74,13 +72,11 @@
         /// <exception cref="TopicNotFoundException">Thrown when there there is no topic with such ID.</exception>
         public async Task<TopicViewModel> GetByIdAsync(int topicId)
         {
-            var entity = await _topicRepository.GetByIdAsync(topicId);
+            var entity = await _topicRepository.GetOneByAsync(expression: _=>_.Id.Equals(topicId));
 
-            if (entity == null)
+            if (entity is null)
             {
                 var exception = new TopicNotFoundException($"No topic with id: {topicId} was found");
-                _logger.LogError(exception, exception.Message);
-
                 throw exception;
             }
 
@@ -98,7 +94,7 @@
         {
             var topic = _mapper.Map<Topic>(topicViewModel);
 
-            var modelFromDb = await _topicRepository.GetByIdAsync(topic.Id);
+            var modelFromDb = await _topicRepository.GetOneByAsync(expression: _ => _.Id.Equals(topicViewModel.Id));
             var modelFromDbCreated = modelFromDb!.DateCreated;
             topic.DateCreated = modelFromDbCreated;
 
