@@ -39,7 +39,7 @@
         ///// <param name="pageNumber">The page number to display, default - 1.</param>
         ///// <returns>The Index view.</returns>
         [HttpGet]
-        public async Task<IActionResult> Index(int pageNumber = 1)
+        public async Task<IActionResult> Index(int? sortOrderId, string? sortOrder, int pageNumber = 1)
         {
             FilterViewModel viewModel = new();
 
@@ -52,6 +52,14 @@
             viewModel.Links = links;
 
             #endregion
+
+            if (sortOrderId != null)
+            {
+                viewModel.ResponseViewModel.SortOrderId = sortOrderId;
+                viewModel.ResponseViewModel.SortOrder = sortOrder;
+
+                links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
+            }
 
             viewModel.CategoriesList = categories.Select(_ => new SelectListItem
             {
