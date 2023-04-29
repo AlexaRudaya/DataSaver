@@ -63,14 +63,13 @@
             #endregion
 
             var links = await _linkService.GetAllAsync();
-            viewModel.Links = links;
-
+            viewModel.Links = links.OrderByDescending(_ => _.DateCreated);
 
             var jsonFilter = string.Empty;
 
             if (sortOrderId is not null)
             {
-                viewModel.ResponseViewModel.SortOrderId = sortOrderId;
+                viewModel.ResponseViewModel!.SortOrderId = sortOrderId;
                 viewModel.ResponseViewModel.SortOrder = sortOrder;
 
                 viewModel.Links = await _linkService.GetAllBySortAsync(sortOrderId, sortOrder);
@@ -83,7 +82,7 @@
             {
                 viewModel.ResponseViewModel = JsonConvert.DeserializeObject<ResponseViewModel>(jsonFilter);
 
-                if (viewModel.ResponseViewModel.SortOrderId is null)
+                if (viewModel.ResponseViewModel!.SortOrderId is null)
                 {
                     viewModel.Links= await _linkService.GetAllByFilterAsync(
                         viewModel.ResponseViewModel!.CategoryId,
@@ -92,7 +91,7 @@
                 }
 
                 else viewModel.Links = await _linkService.GetAllBySortAsync(viewModel.ResponseViewModel.SortOrderId, viewModel.ResponseViewModel.SortOrder);
-            }            
+            }
 
             var count = viewModel.Links!.Count();
             viewModel.PageViewModel = new(count, pageNumber);

@@ -52,7 +52,7 @@
         {
             IQueryable<T> query = _table;
 
-            if (expression != null)
+            if (expression is not null)
             {
                 query = query.Where(expression);
             } 

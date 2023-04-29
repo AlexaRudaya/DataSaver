@@ -29,6 +29,8 @@
 
             link.DateCreated = DateTime.UtcNow;
 
+            linkViewModel.DateCreated = link.DateCreated;
+
             await _linkRepository.CreateAsync(link);
 
             return linkViewModel;
