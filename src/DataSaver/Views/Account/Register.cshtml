@@ -1,13 +1,14 @@
 ﻿@using DataSaver.Models
 @model RegisterViewModel
 
-<div class="card-body">
-    <form asp-route="Register">
+<div class="card-body" >
+<form asp-route="Register">
         <div class="card border-info mb-3" style="width: 50%;">
             <div class="card-header">
                 <h4><strong>Register:</strong></h4>
             </div>
             <div class="card-body">
+
                 <div class="col-3 text-end">
                     <label asp-for="Email" class="form-label mt-4">Email</label>
                 </div>
@@ -33,9 +34,8 @@
                 </div>
             </div>
             <div class="card-footer bg-color-white">
-                <input type="text" class="btn btn-primary" onclick="register()" value="Register">
-            </div>
-           
+                    <div class="btn btn-primary" onclick="register()">Register</div>              
+            </div>          
         </div>
     </form>
 </div>

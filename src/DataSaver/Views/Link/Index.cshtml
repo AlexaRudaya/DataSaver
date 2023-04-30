@@ -91,7 +91,7 @@
     <div col>
         @if (Model.PageViewModel!.HasPreviousPage)
         {
-            <a asp-action="Index"
+           <a asp-action="Index"
            asp-route-pageNumber="@(Model.PageViewModel.PageNumber - 1)"
            asp-route-tategoryId="@Model.ResponseViewModel!.CategoryId"
            asp-route-topicId="@Model.ResponseViewModel.TopicId"
@@ -99,11 +99,11 @@
            asp-route-sortOrder="@Model.ResponseViewModel.SortOrder"
                class="btn btn-outline-dark">
                 <i class="fa-solid fa-left-long"></i>
-            </a>
+           </a>
         }
         @if (Model.PageViewModel.HasNextPage)
         {
-            <a asp-action="Index"
+           <a asp-action="Index"
            asp-route-pageNumber="@(Model.PageViewModel.PageNumber + 1)"
            asp-route-categoryId="@Model.ResponseViewModel!.CategoryId"
            asp-route-topicId="@Model.ResponseViewModel.TopicId"
@@ -111,7 +111,7 @@
            asp-route-sortOrder="@Model.ResponseViewModel.SortOrder"
                class="btn btn-outline-dark">
                 <i class="fa-solid fa-right-long"></i>
-            </a>
+           </a>
         }
     </div>
 </form>
