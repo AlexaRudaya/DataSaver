@@ -13,8 +13,6 @@ const login = async () => {
         Password: document.getElementById("Password").value
     };
 
-    console.log('Data to be sent:', JSON.stringify(data));
-
     const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -28,7 +26,9 @@ const login = async () => {
         alert("Login was successful!");
         redirectToPage();
     }
+
     else {
+        console.log('Status code:', response.status);
         alert("Invalid login attempt! Try again or contact administrator.");
     }
 };

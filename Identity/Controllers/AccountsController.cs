@@ -76,7 +76,7 @@
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation($"User {registerAUser.UserName} registered successfully.");
+                    _logger.LogInformation($"User {registerAUser.Email} registered successfully.");
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
 

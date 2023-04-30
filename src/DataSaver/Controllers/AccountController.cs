@@ -9,6 +9,12 @@
         }
 
         [HttpGet]
+        public IActionResult LogOff()
+        {
+            return View();
+        }
+
+        [HttpGet]
         public IActionResult Register()
         {
             return View();
