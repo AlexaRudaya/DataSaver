@@ -1,6 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity;
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -43,36 +41,22 @@
                             <li class="nav-item">
                                 @await Html.PartialAsync("_SearchBar", new FilterViewModel())
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                            @await Html.PartialAsync("_LoginPartial")  
+                              @*<li class="nav-item">
+                            <a class="nav-link" id="register" asp-area="" asp-controller="Account" asp-action="Register">
+                            <i class="fa-solid fa-user"></i>
+                            </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
+                            <a class="nav-link" id="login" asp-area="" asp-controller="Account" asp-action="Login">
+                            <i class="fa-regular fa-user"></i>
+                            </a>
+                            </li>*@
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="LogOff">LogOff</a>
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="LogOff">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                </a>
                             </li>
-                            @* @if (SignInManager.IsSignedIn(User))
-                            {
-                            <li class="nav-item">
-                            <a class="nav-link" href="#">Hello, @UserManager.GetUserName(User)</a>
-                            </li>
-                            <li class="nav-item">
-                            <form id="logoutForm" method="post" class="form-inline" asp-controller="Account"
-                            asp-action="LogOff">
-                            <button type="submit" class="btn nav-link">Logout</button>
-                            </form>
-                            </li>
-                            }
-                            else
-                            {
-                            <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
-                            </li>
-                            }*@
                         </ul>
                     </div>
                 </nav>
@@ -92,6 +76,9 @@
         </div>
     </section>
 
+
+@*           <script src="~/js/isRegistered.js"></script>
+*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/assets/js/jquery-3.3.1.min.js"></script>
     <script src="~/assets/js/bootstrap.min.js"></script>
