@@ -17,8 +17,29 @@
             _logger = logger;
         }
 
+        [HttpGet]
+        [Route("IsRegistered")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> IsRegistered()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user is not null)
+            {
+                _logger.LogInformation($"User is registered.");
+
+                return Ok("User exists");
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost]
         [Route("Login")]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
@@ -60,7 +81,7 @@
 
         [HttpPost]
         [Route("Register")]
-        [ProducesResponseType(201)]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerAUser)
         { 

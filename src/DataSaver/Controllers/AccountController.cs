@@ -19,5 +19,11 @@
         {
             return View();
         }
+
+        [HttpGet]
+        public IActionResult IsRegistered()
+        {
+            return View();
+        }
     }
 }
