@@ -22,7 +22,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: CORS_POLICY,
                       _ =>
                       {
-                          _.WithOrigins("https://localhost:7092")
+                          _.WithOrigins("https://localhost:7092",
+                                        "https://datasaver20230502112613.azurewebsites.net")
                           .AllowAnyMethod()
                           .AllowAnyHeader();
                       });

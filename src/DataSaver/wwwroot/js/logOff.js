@@ -2,11 +2,11 @@
     window.location.href = await '/Account/Login';
 }
 
-const apiUrl = 'https://localhost:7059/api/Accounts/LogOff';
+const apiUrlLogOff = 'https://localhost:7059/api/Accounts/LogOff';
 
 const logOff = async () => {
 
-    const response = await fetch(apiUrl, {
+    const response = await fetch(apiUrlLogOff, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

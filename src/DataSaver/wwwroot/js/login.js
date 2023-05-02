@@ -2,7 +2,7 @@
     window.location.href = await '/Link/Index';
 }
 
-const apiUrl = 'https://localhost:7059/api/Accounts/Login';
+const apiUrlLogin = 'https://localhost:7059/api/Accounts/Login';
 
 const login = async () => {
 
@@ -13,7 +13,7 @@ const login = async () => {
         Password: document.getElementById("Password").value
     };
 
-    const response = await fetch(apiUrl, {
+    const response = await fetch(IdentityAPI.apiUrlLogin, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

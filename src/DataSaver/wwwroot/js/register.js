@@ -2,7 +2,7 @@
     window.location.href = await '/Link/Index';
 }
 
-const apiUrl = 'https://localhost:7059/api/Accounts/Register';
+const apiUrlRegister = 'https://localhost:7059/api/Accounts/Register';
 
 const register = async () => {
 
@@ -16,7 +16,7 @@ const register = async () => {
 
     console.log('Data to be sent:', JSON.stringify(data));
 
-        const response = await fetch(apiUrl, {
+    const response = await fetch(apiUrlRegister, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
