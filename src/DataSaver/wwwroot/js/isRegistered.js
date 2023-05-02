@@ -14,7 +14,7 @@ const isRegistered = async () => {
     if (response.ok) {
         const registered = await response.json();
 
-        if (registered) {
+        if (registered === 'User exists') {
             document.getElementById('register').style.display = 'none';
         } else {
             document.getElementById('login').style.display = 'none';

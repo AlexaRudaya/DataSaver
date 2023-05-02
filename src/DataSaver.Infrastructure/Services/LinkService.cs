@@ -100,37 +100,40 @@
             return linksViewModelList;
         }
 
+        /// <summary>
+        /// Gets all links sorted by either Category or Topic ID and orders the results..
+        /// </summary>
+        /// <param name="sortOrderId">The ID of the Category or Topic by which to sort the links.</param>
+        /// <param name="sortOrder">The sorting order to use.</param>
+        /// <returns>Links sorted and ordered as specified.</returns>
         public async Task<IEnumerable<LinkViewModel>> GetAllBySortAsync(
             int? sortOrderId,
             string? sortOrder)
         {
-#pragma warning disable CS8602
-#pragma warning disable CS8619
-
             IEnumerable<Link> sortedLinks = new List<Link>();
             IEnumerable<Link> priorityLinks = new List<Link>();
             IEnumerable<Link> otherLinks = new List<Link>();
 
-            if (sortOrder.ToUpper().Equals(Constants.Category.ToUpper()))
+            if (sortOrder!.ToUpper().Equals(Constants.Category.ToUpper()))
             {
                 var links = await _linkRepository.GetAllByAsync(
                 include: query => query
                     .Include(_ => _.Category)
-                    .Include(_ => _.Topic),
+                    .Include(_ => _.Topic!),
                 expression: _ =>_.CategoryId.Equals(sortOrderId));
 
                 priorityLinks = links
-                                   .OrderBy(_=>_.Topic.Name)
+                                   .OrderBy(_=>_.Topic!.Name)
                                    .ThenBy(_=>_.Name);
 
                 links = await _linkRepository.GetAllByAsync(
                 include: query => query
                     .Include(_ => _.Category)
-                    .Include(_ => _.Topic),
+                    .Include(_ => _.Topic!),
                 expression: _ => !_.CategoryId.Equals(sortOrderId));
 
                 otherLinks = links
-                                .OrderBy(_ => _.Topic.Name)
+                                .OrderBy(_ => _.Topic!.Name)
                                 .ThenBy(_ => _.Name);
             }
             else
@@ -138,21 +141,21 @@
                 var links = await _linkRepository.GetAllByAsync(
                 include: query => query
                     .Include(_ => _.Category)
-                    .Include(_ => _.Topic),
+                    .Include(_ => _.Topic!),
                 expression: _ => _.TopicId.Equals(sortOrderId));
 
                 priorityLinks = links
-                                   .OrderBy(_ => _.Category.Name)
+                                   .OrderBy(_ => _.Category!.Name)
                                    .ThenBy(_ => _.Name);
 
                 links = await _linkRepository.GetAllByAsync(
                 include: query => query
                     .Include(_ => _.Category)
-                    .Include(_ => _.Topic),
+                    .Include(_ => _.Topic!),
                 expression: _ => !_.TopicId.Equals(sortOrderId));
 
                 otherLinks = links
-                                .OrderBy(_ => _.Category.Name)
+                                .OrderBy(_ => _.Category!.Name)
                                 .ThenBy(_ => _.Name);
             }
 
@@ -200,7 +203,7 @@
             var entity = await _linkRepository.GetOneByAsync(
                 include: query => query
                     .Include(_ => _.Category)
-                    .Include(_ => _.Topic),
+                    .Include(_ => _.Topic!),
                 expression: _=>_.Id.Equals(linkId));    
 
             if (entity is null) 
@@ -226,7 +229,7 @@
             var modelFromDb = await _linkRepository.GetOneByAsync(
                 include: query => query
                     .Include(_ => _.Category)
-                .Include(_ => _.Topic),
+                .Include(_ => _.Topic!),
                 expression: _ => _.Id.Equals(link.Id));
 
             var modelFromDbCreated = modelFromDb!.DateCreated;

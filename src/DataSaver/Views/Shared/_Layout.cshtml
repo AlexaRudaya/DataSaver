@@ -42,16 +42,6 @@
                                 @await Html.PartialAsync("_SearchBar", new FilterViewModel())
                             </li>
                             @await Html.PartialAsync("_LoginPartial")  
-                              @*<li class="nav-item">
-                            <a class="nav-link" id="register" asp-area="" asp-controller="Account" asp-action="Register">
-                            <i class="fa-solid fa-user"></i>
-                            </a>
-                            </li>
-                            <li class="nav-item">
-                            <a class="nav-link" id="login" asp-area="" asp-controller="Account" asp-action="Login">
-                            <i class="fa-regular fa-user"></i>
-                            </a>
-                            </li>*@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Account" asp-action="LogOff">
                                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
@@ -76,9 +66,6 @@
         </div>
     </section>
 
-
-@*           <script src="~/js/isRegistered.js"></script>
-*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="~/assets/js/jquery-3.3.1.min.js"></script>
     <script src="~/assets/js/bootstrap.min.js"></script>

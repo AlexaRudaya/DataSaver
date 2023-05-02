@@ -33,11 +33,13 @@
             return RedirectToAction(nameof(Index));
         }
 
-        ///// <summary>
-        ///// Displays the Index page.
-        ///// </summary>
-        ///// <param name="pageNumber">The page number to display, default - 1.</param>
-        ///// <returns>The Index view.</returns>
+        /// <summary>
+        /// Displays the Index page.
+        /// </summary>
+        /// <param name="sortOrderId">The ID of the sort order selected by the user.</param>
+        /// <param name="sortOrder">The sort direction selected by the user.</param>
+        /// <param name="pageNumber">The page number to display.</param>
+        /// <returns>The Index view.</returns>
         [HttpGet]
         public async Task<IActionResult> Index(int? sortOrderId, string? sortOrder, int pageNumber = 1)
         {
@@ -107,7 +109,7 @@
         /// <param name="pageNumber">The page number to display.</param>
         /// <returns>The redirection to the Index page with the filtered results.</returns>
         [HttpPost]
-        public async Task<IActionResult> Index(FilterViewModel viewModel, int pageNumber = 1)
+        public IActionResult Index(FilterViewModel viewModel, int pageNumber = 1)
         {
             ResponseViewModel responseViewModel = new()
             {
