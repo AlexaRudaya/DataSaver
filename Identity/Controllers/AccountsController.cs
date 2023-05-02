@@ -54,6 +54,8 @@
 
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.GetUserAsync(User);
+
                     _logger.LogInformation($"User {loginDto.UserName} logged in successfully.");
 
                     return Ok("Successfully logged in!");
