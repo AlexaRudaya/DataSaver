@@ -1,0 +1,121 @@
+﻿@using DataSaver.ApplicationCore.ViewModels
+@model FilterViewModel
+
+<form asp-controller="Link" asp-action="Index">
+    <div class="col">
+        <div class="row">
+            <div class="col-6">
+                <p></p>
+                <h4><strong>Here you can find all of your links</strong></h4>
+            </div>
+            <div class="col-6">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a asp-controller="Link" asp-action="CreateLink" class="btn btn-primary">
+                        New link
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container p-3">
+        <select asp-for="ResponseViewModel!.CategoryId" button type="button" class="btn btn-outline-dark" asp-items="Model.CategoriesList">
+            <option value="">All Categories</option>
+        </select>
+
+        <select asp-for="ResponseViewModel!.TopicId" button type="button" class="btn btn-outline-dark" asp-items="Model.TopicsList">
+            <option value="">All Types</option>
+        </select>
+        <input type="submit" class="btn btn-outline-dark btn-sm" value="Apply" />
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model.Links!)
+        {
+            <div class="col-6">
+                <div class="card h-100 border-info">
+                    <div class="card-header bg-color-white bg-transparent border-info">
+                        <strong>@item.Name</strong>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <dd>
+                            <a href=@item.UrlLink target="_blank">
+                                <img src="@item.PreviewImage" class="card-img-top" style="width: 180px; height: 100px;" alt="@item.PreviewTitle" />
+                            </a>
+                        </dd>
+                        <dt class="linkComponent">
+                            @item.PreviewTitle
+                        </dt>
+                        <dd class="linkComponent">
+                            @item.Description
+                        </dd>
+                        <dt>
+                            Category
+                        </dt>
+                        <dd>
+                            <a asp-action="Index" asp-route-sortOrder="category" asp-route-sortOrderId="@item.CategoryId">
+                                @item.Category?.Name
+                            </a>
+                        </dd>
+                        <dt>
+                            Topic
+                        </dt>
+                        <dd>
+                            <a asp-action="Index" asp-route-sortOrder="topic" asp-route-sortOrderId="@item.TopicId">
+                                @item.Topic?.Name
+                            </a>
+                        </dd>
+                        <dd class="columnUrl">
+                            <a href=@item.UrlLink target="_blank">@item.UrlLink</a>
+                            <button class="btn btn-outline-dark" onclick="copyToClipboard(event,'@item.UrlLink')">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </dd>
+                    </div>
+                    <div class="card-footer bg-color-white border-info">
+                        <div class="col-0 d-flex justify-content-between">
+                            <a asp-controller="Link" asp-action="UpdateLink" asp-route-id="@item.Id">
+                                <i class="fa-regular fa-pen-to-square fa-lg"></i>
+                            </a>
+                            <a asp-controller="Link" asp-action="DeleteLink" asp-route-id="@item.Id">
+                                <i class="fa-regular fa-trash-can fa-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div col>
+        @if (Model.PageViewModel!.HasPreviousPage)
+        {
+           <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageViewModel.PageNumber - 1)"
+           asp-route-tategoryId="@Model.ResponseViewModel!.CategoryId"
+           asp-route-topicId="@Model.ResponseViewModel.TopicId"
+           asp-route-sortOrderId="@Model.ResponseViewModel.SortOrderId"
+           asp-route-sortOrder="@Model.ResponseViewModel.SortOrder"
+               class="btn btn-outline-dark">
+                <i class="fa-solid fa-left-long"></i>
+           </a>
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+           <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageViewModel.PageNumber + 1)"
+           asp-route-categoryId="@Model.ResponseViewModel!.CategoryId"
+           asp-route-topicId="@Model.ResponseViewModel.TopicId"
+           asp-route-sortOrderId="@Model.ResponseViewModel.SortOrderId"
+           asp-route-sortOrder="@Model.ResponseViewModel.SortOrder"
+               class="btn btn-outline-dark">
+                <i class="fa-solid fa-right-long"></i>
+           </a>
+        }
+    </div>
+</form>
+
+@section scripts{
+    <script src="~/js/copyToClipboardjs.js"></script>
+}

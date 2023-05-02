@@ -1,0 +1,22 @@
+﻿@using DataSaver.ApplicationCore.ViewModels
+@model TopicViewModel
+
+<form method="post" asp-controller="Topic" asp-action="CreateTopic">
+    <div class="card border-info mb-3" style="width: 60%;">
+        <div class="card-header bg-color-white bg-transparent border-info">
+            <h4><strong>New topic creation:</strong></h4>
+        </div>
+        <div class="card-body">
+            <div class="col-3 text-end">
+                <label asp-for="Name" class="form-label mt-4">Name</label>
+            </div>
+            <div class="col-9">
+                <input asp-for="Name" type="text" class="form-control" placeholder="Enter a name">
+                <span asp-validation-for="Name" class=" text-danger"></span>
+            </div>
+        </div>
+        <div class="card-footer bg-color-white">
+            <input type="submit" class="btn btn-outline-info" value="Create">
+        </div>
+    </div>
+</form>

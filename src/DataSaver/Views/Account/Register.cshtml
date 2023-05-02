@@ -1,0 +1,45 @@
+﻿@using DataSaver.Models
+@model RegisterViewModel
+
+<div class="card-body" >
+<form asp-route="Register">
+        <div class="card border-info mb-3" style="width: 50%;">
+            <div class="card-header">
+                <h4><strong>Register:</strong></h4>
+            </div>
+            <div class="card-body">
+
+                <div class="col-3 text-end">
+                    <label asp-for="Email" class="form-label mt-4">Email</label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="Email" type="text" class="form-control" placeholder="Enter an email" id="Email">
+                    <span asp-validation-for="Email" class=" text-danger"></span>
+                </div>
+
+                <div class="col-3 text-end">
+                    <label asp-for="UserName" class="form-label mt-4">Name</label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="UserName" type="text" class="form-control" placeholder="User name" id="UserName">
+                    <span asp-validation-for="UserName" class=" text-danger"></span>
+                </div>
+
+                <div class="col-3 text-end">
+                    <label asp-for="Password" class="form-label mt-4">Password</label>
+                </div>
+                <div class="col-9">
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" autocomplete="off" id="Password">
+                    <span asp-validation-for="Password" class=" text-danger"></span>
+                </div>
+            </div>
+            <div class="card-footer bg-color-white">
+                    <div class="btn btn-primary" onclick="register()">Register</div>              
+            </div>          
+        </div>
+    </form>
+</div>
+
+@section scripts{
+    <script src="~/js/register.js"></script>
+}

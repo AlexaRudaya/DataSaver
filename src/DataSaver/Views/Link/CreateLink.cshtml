@@ -1,0 +1,58 @@
+﻿@using DataSaver.ApplicationCore.ViewModels
+@model LinkForCreateViewModel
+
+<form method="post" asp-controller="Link" asp-action="CreateLink">
+    <div class="card border-info mb-3" style="width: 60%;">
+        <div class="card-header bg-color-white bg-transparent border-info">
+            <h4><strong>New link creation:</strong></h4>
+        </div>
+        <div class="card-body">
+            <div class="col-3 text-end">
+                <label asp-for="LinkVM!.Name" class="form-label mt-4">Name</label>
+            </div>
+            <div class="col-9">
+                <input asp-for="LinkVM!.Name" type="text" class="form-control" placeholder="Enter a name">
+                <span asp-validation-for="LinkVM!.Name" class=" text-danger"></span>
+            </div>
+
+            <div class="col-3 text-end">
+                <label asp-for="LinkVM!.Description" class="form-label mt-4">Description</label>
+            </div>
+            <div class="col-9">
+                <input asp-for="LinkVM!.Description" type="text" class="form-control" placeholder="Some description">
+                <span asp-validation-for="LinkVM!.Description" class=" text-danger"></span>
+            </div>
+
+            <div class="col-3 text-end">
+                <label asp-for="LinkVM!.UrlLink" class="form-label mt-4">URL</label>
+            </div>
+            <div class="col-9">
+                <input asp-for="LinkVM!.UrlLink" type="text" class="form-control" placeholder="Enter an url">
+                <span asp-validation-for="LinkVM!.UrlLink" class=" text-danger"></span>
+            </div>
+
+            <div class="col-3 text-end">
+                <label asp-for="LinkVM!.CategoryId" class="form-label mt-4">Category</label>
+            </div>
+            <div class="col-9">
+                <select asp-for="LinkVM!.CategoryId" asp-items="@Model.Categories" class="form-control">
+                    <option disabled selected value="">Selected category</option>
+                </select>
+                <span asp-validation-for="LinkVM!.CategoryId" class=" text-danger"></span>
+            </div>
+
+            <div class="col-3 text-end">
+                <label asp-for="LinkVM!.TopicId" class="form-label mt-4">Topic</label>
+            </div>
+            <div class="col-9">
+                <select asp-for="LinkVM!.TopicId" asp-items="@Model.Topics" class="form-control">
+                    <option disabled selected value="">Selected category</option>
+                </select>
+                <span asp-validation-for="LinkVM!.TopicId" class=" text-danger"></span>
+            </div>
+        </div>
+        <div class="card-footer bg-color-white">
+            <input type="submit" class="btn btn-outline-info" value="Create">
+        </div>
+    </div>
+</form>
