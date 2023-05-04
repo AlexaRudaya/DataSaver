@@ -21,7 +21,6 @@ const isRegistered = async () => {
         }
     } else {
         console.log('Error checking registration status:', response.statusText);
-        console.log('Status code:', response.status);
     }
 };
 

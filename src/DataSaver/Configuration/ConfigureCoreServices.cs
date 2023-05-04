@@ -20,6 +20,26 @@ public static class ConfigureCoreServices
 
         #endregion
 
+        #region Identity
+
+        services.AddDbContext<ApplicationDbContext>(_ =>
+            _.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
+
+        services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+        services.Configure<IdentityOptions>(_ =>
+        {
+            _.Password.RequiredLength = 5;
+            _.Password.RequireLowercase = true;
+            _.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
+            _.Lockout.MaxFailedAccessAttempts = 5;
+            _.SignIn.RequireConfirmedAccount = false;
+        });
+
+        #endregion
+
         #region LinkPreview_API
 
         services.AddHttpClient<ISetLinkPreviewService, SetLinkPreviewService>()

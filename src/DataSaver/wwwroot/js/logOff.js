@@ -21,5 +21,6 @@ const logOff = async () => {
     }
     else {
         alert("Invalid log off attempt! Try again or contact administrator.");
+        console.error('Error occurred while making the request:', error);
     }
 };

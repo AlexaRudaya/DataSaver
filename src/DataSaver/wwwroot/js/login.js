@@ -13,7 +13,7 @@ const login = async () => {
         Password: document.getElementById("Password").value
     };
 
-    const response = await fetch(IdentityAPI.apiUrlLogin, {
+    const response = await fetch(apiUrlLogin, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
