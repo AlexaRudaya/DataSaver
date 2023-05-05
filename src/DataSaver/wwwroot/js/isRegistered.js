@@ -24,4 +24,4 @@ const isRegistered = async () => {
     }
 };
 
-isRegistered();
+await isRegistered();
