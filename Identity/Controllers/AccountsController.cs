@@ -39,6 +39,7 @@
 
         [HttpPost]
         [Route("Login")]
+        [ProducesResponseType(200)]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -65,6 +66,8 @@
                     _logger.LogWarning($"Invalid login attempt: Provided data for user {loginDto.UserName} is invalid.");
 
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    
+                    return BadRequest(ModelState);
                 }
             }
 
@@ -84,6 +87,7 @@
         [HttpPost]
         [Route("Register")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerAUser)
         { 
@@ -110,6 +114,8 @@
                     _logger.LogWarning($"Invalid register attempt: User {registerAUser.UserName} entered the password that is not unique enough.");
 
                     ModelState.AddModelError("Password", "User could not created. Password is not unique enough.");
+
+                    return BadRequest(ModelState);
                 }
             }
 
