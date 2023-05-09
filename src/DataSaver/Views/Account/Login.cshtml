@@ -25,6 +25,12 @@
                     <span asp-validation-for="Password" class=" text-danger"></span>
                 </div>
             </div>
+            <div class="col-9 text-end">
+                <label>
+                    @Html.CheckBox("RememberMe", true)
+                    Remember me?
+                </label>
+            </div>
             <div class="card-footer bg-color-white">
                 <div class="btn btn-primary" onclick="login()">Login</div>
             </div>

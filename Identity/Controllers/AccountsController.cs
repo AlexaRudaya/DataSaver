@@ -55,7 +55,17 @@
 
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.GetUserAsync(User);
+                    var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+                    identity.AddClaim(new Claim(ClaimTypes.Name, loginDto.UserName));
+
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = loginDto.RememberMe
+                    };
+
+                    //var user = await _userManager.GetUserAsync(User);
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
 
                     _logger.LogInformation($"User {loginDto.UserName} logged in successfully.");
 

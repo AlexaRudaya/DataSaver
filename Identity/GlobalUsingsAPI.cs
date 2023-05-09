@@ -12,4 +12,7 @@ global using System.Net;
 global using System.Text.Json;
 global using Identity_API.Middlewares;
 global using Serilog;
+global using Microsoft.AspNetCore.Authentication;
+global using Microsoft.AspNetCore.Authentication.Cookies;
+global using System.Security.Claims;
 
