@@ -25,7 +25,7 @@ public static class ConfigureCoreServices
         services.AddDbContext<ApplicationDbContext>(_ =>
             _.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
 
-        services.AddIdentity<IdentityUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 

@@ -1,7 +1,3 @@
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.IdentityModel.Tokens;
-//using System.Text;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(_ =>
@@ -47,27 +43,12 @@ builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-//builder.Services.AddAuthentication(options =>
-//{
-//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//})
-//.AddJwtBearer(options =>
-//{
-//    options.Authority = builder.Configuration["Authentication:Authority"];
-//    options.Audience = builder.Configuration["Authentication:Audience"];
-//    options.RequireHttpsMetadata = false;
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuerSigningKey = true,
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SigningKey"])),
-//        ValidateIssuer = true,
-//        ValidIssuer = builder.Configuration["Authentication:Issuer"],
-//        ValidateAudience = true,
-//        ValidAudience = builder.Configuration["Authentication:Audience"],
-//        ValidateLifetime = true
-//    };
-//});
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Accounts/Login";
+        options.LogoutPath = "/Accounts/LogOff";
+    });
 
 var app = builder.Build();
 

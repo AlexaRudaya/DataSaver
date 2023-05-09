@@ -10,7 +10,8 @@ const login = async () => {
 
     const data = {
         UserName: document.getElementById("UserName").value,
-        Password: document.getElementById("Password").value
+        Password: document.getElementById("Password").value,
+        RememberMe: document.getElementById("RememberMe").checked
     };
 
     const response = await fetch(apiUrlLogin, {
