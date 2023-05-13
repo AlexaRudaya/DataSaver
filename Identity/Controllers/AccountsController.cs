@@ -56,20 +56,23 @@
                 if (result.Succeeded)
                 {
                     var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                    identity.AddClaim(new Claim(ClaimTypes.Name, loginDto.UserName));
+                    identity.AddClaim(new Claim(ClaimTypes.Name, loginDto.UserName!));
 
                     var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = loginDto.RememberMe
                     };
 
-                    //var user = await _userManager.GetUserAsync(User);
+                    var user = await _userManager.FindByNameAsync(loginDto.UserName!);
 
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
+                    if (user is not null)
+                    {
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
 
-                    _logger.LogInformation($"User {loginDto.UserName} logged in successfully.");
+                        _logger.LogInformation($"User {loginDto.UserName} logged in successfully.");
 
-                    return Ok("Successfully logged in!");
+                        return Ok("Successfully logged in!");
+                    }
                 }
                 else
                 {
