@@ -3,6 +3,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(_ =>
     _.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Accounts/Login";
+        options.LogoutPath = "/Accounts/LogOff";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    });
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); 
+});
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -43,13 +58,6 @@ builder.Services.AddTransient<GlobalExceptionHandlingMiddleware>();
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Accounts/Login";
-        options.LogoutPath = "/Accounts/LogOff";
-    });
-
 var app = builder.Build();
 
 app.UseSwagger();
@@ -64,6 +72,8 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseCors(CORS_POLICY);
 
