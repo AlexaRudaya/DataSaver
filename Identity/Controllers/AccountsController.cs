@@ -90,9 +90,12 @@
         [HttpPost]
         [Route("LogOff")]
         [ProducesResponseType(204)]
+        [Authorize]
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
+
+            _logger.LogInformation("User logged out.");
 
             return NoContent();
         }
@@ -118,7 +121,14 @@
                 {
                     _logger.LogInformation($"User {registerAUser.Email} registered successfully.");
 
+                    await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email!));
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    if (User.Identity!.IsAuthenticated)
+                    {
+                        _logger.LogInformation($"User {registerAUser.Email} is Authenticated");
+                    }
 
                     return Ok("Successfully registered!");
                 }
