@@ -22,5 +22,8 @@ global using Newtonsoft.Json;
 global using DataSaver.Services;
 global using System.ComponentModel.DataAnnotations;
 global using Polly;
+global using Microsoft.AspNetCore.Identity;
+global using DataSaver.Infrastructure.Identity;
+
 
 

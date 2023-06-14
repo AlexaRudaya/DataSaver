@@ -12,4 +12,6 @@ global using DataSaver.ApplicationCore.Interfaces.IService;
 global using Newtonsoft.Json;
 global using System.Linq.Expressions;
 global using Microsoft.EntityFrameworkCore.Query;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 

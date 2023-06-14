@@ -39,6 +39,7 @@
 
         [HttpPost]
         [Route("Login")]
+        [ProducesResponseType(200)]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
@@ -54,17 +55,32 @@
 
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.GetUserAsync(User);
+                    var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+                    identity.AddClaim(new Claim(ClaimTypes.Name, loginDto.UserName!));
 
-                    _logger.LogInformation($"User {loginDto.UserName} logged in successfully.");
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = loginDto.RememberMe
+                    };
 
-                    return Ok("Successfully logged in!");
+                    var user = await _userManager.FindByNameAsync(loginDto.UserName!);
+
+                    if (user is not null)
+                    {
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), authProperties);
+
+                        _logger.LogInformation($"User {loginDto.UserName} logged in successfully.");
+
+                        return Ok("Successfully logged in!");
+                    }
                 }
                 else
                 {
                     _logger.LogWarning($"Invalid login attempt: Provided data for user {loginDto.UserName} is invalid.");
 
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    
+                    return BadRequest(ModelState);
                 }
             }
 
@@ -74,9 +90,12 @@
         [HttpPost]
         [Route("LogOff")]
         [ProducesResponseType(204)]
+        [Authorize]
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
+
+            _logger.LogInformation("User logged out.");
 
             return NoContent();
         }
@@ -84,6 +103,7 @@
         [HttpPost]
         [Route("Register")]
         [ProducesResponseType(200)]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerAUser)
         { 
@@ -101,7 +121,14 @@
                 {
                     _logger.LogInformation($"User {registerAUser.Email} registered successfully.");
 
+                    await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email!));
+
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    if (User.Identity!.IsAuthenticated)
+                    {
+                        _logger.LogInformation($"User {registerAUser.Email} is Authenticated");
+                    }
 
                     return Ok("Successfully registered!");
                 }
@@ -110,6 +137,8 @@
                     _logger.LogWarning($"Invalid register attempt: User {registerAUser.UserName} entered the password that is not unique enough.");
 
                     ModelState.AddModelError("Password", "User could not created. Password is not unique enough.");
+
+                    return BadRequest(ModelState);
                 }
             }
 

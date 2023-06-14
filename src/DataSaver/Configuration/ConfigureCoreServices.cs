@@ -1,4 +1,6 @@
-﻿namespace DataSaver.Configuration;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+
+namespace DataSaver.Configuration;
 public static class ConfigureCoreServices
 {
     public static void ConfigureServices(IConfiguration configuration, IServiceCollection services,
@@ -17,6 +19,34 @@ public static class ConfigureCoreServices
         #region DB
 
         services.AddDbContext<LinkContext>(context => context.UseSqlServer(configuration.GetConnectionString("LinkConnection")));
+
+        #endregion
+
+        #region Identity
+
+        services.AddDbContext<ApplicationDbContext>(_ =>
+            _.UseSqlServer(configuration.GetConnectionString("IdentityConnection")));
+
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Accounts/Login";
+                options.LogoutPath = "/Accounts/LogOff";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            });
+
+        services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+        services.Configure<IdentityOptions>(_ =>
+        {
+            _.Password.RequiredLength = 5;
+            _.Password.RequireLowercase = true;
+            _.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromSeconds(10);
+            _.Lockout.MaxFailedAccessAttempts = 5;
+            _.SignIn.RequireConfirmedAccount = false;
+        });
 
         #endregion
 
