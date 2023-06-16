@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-
-namespace DataSaver.Controllers
+﻿namespace DataSaver.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class LinkController : Controller
     {
         private readonly ILinkService _linkService;

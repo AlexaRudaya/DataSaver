@@ -1,4 +1,4 @@
-﻿namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.ApplicationCore.Services
 {
     public sealed class LinkService : ILinkService
     {
@@ -6,7 +6,7 @@
         private readonly IMapper _mapper;
         private readonly ILogger<LinkService> _logger;
 
-        public LinkService(ILinkRepository linkRepository, 
+        public LinkService(ILinkRepository linkRepository,
                 IMapper mapper,
                 ILogger<LinkService> logger)
         {
@@ -86,7 +86,7 @@
                         search.ToUpper().Contains(_.Description.ToUpper()) ||
                         _.PreviewTitle!.ToUpper().Contains(search.ToUpper()) ||
                         search.ToUpper().Contains(_.PreviewTitle.ToUpper()));
-            } 
+            }
 
             var links = await _linkRepository.GetAllByFilterAsync(
 
@@ -114,17 +114,17 @@
             IEnumerable<Link> priorityLinks = new List<Link>();
             IEnumerable<Link> otherLinks = new List<Link>();
 
-            if (sortOrder!.ToUpper().Equals(Constants.Category.ToUpper()))
+            if (sortOrder!.ToUpper().Equals(Constants.Constants.Category.ToUpper()))
             {
                 var links = await _linkRepository.GetAllByAsync(
                 include: query => query
                     .Include(_ => _.Category)
                     .Include(_ => _.Topic!),
-                expression: _ =>_.CategoryId.Equals(sortOrderId));
+                expression: _ => _.CategoryId.Equals(sortOrderId));
 
                 priorityLinks = links
-                                   .OrderBy(_=>_.Topic!.Name)
-                                   .ThenBy(_=>_.Name);
+                                   .OrderBy(_ => _.Topic!.Name)
+                                   .ThenBy(_ => _.Name);
 
                 links = await _linkRepository.GetAllByAsync(
                 include: query => query
@@ -204,17 +204,17 @@
                 include: query => query
                     .Include(_ => _.Category)
                     .Include(_ => _.Topic!),
-                expression: _=>_.Id.Equals(linkId));    
+                expression: _ => _.Id.Equals(linkId));
 
-            if (entity is null) 
+            if (entity is null)
             {
                 var exception = new LinkNotFoundException($"No link with id: {linkId} was found");
                 throw exception;
             }
 
-            var linkViewModel = _mapper.Map<LinkViewModel>(entity);      
+            var linkViewModel = _mapper.Map<LinkViewModel>(entity);
 
-            return linkViewModel;   
+            return linkViewModel;
         }
 
         /// <summary>
@@ -229,7 +229,7 @@
             var modelFromDb = await _linkRepository.GetOneByAsync(
                 include: query => query
                     .Include(_ => _.Category)
-                .Include(_ => _.Topic!),
+                    .Include(_ => _.Topic!),
                 expression: _ => _.Id.Equals(link.Id));
 
             var modelFromDbCreated = modelFromDb!.DateCreated;

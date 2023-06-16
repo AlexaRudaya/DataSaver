@@ -1,4 +1,4 @@
-﻿namespace DataSaver.Infrastructure.Mapper
+﻿namespace DataSaver.ApplicationCore.Mapper
 {
     public sealed class MapperProfile : AutoMapper.Profile
     {
