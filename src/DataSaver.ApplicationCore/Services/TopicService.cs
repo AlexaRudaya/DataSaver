@@ -1,4 +1,4 @@
-﻿namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.ApplicationCore.Services
 {
     public sealed class TopicService : ITopicService
     {
@@ -24,7 +24,7 @@
             var topic = _mapper.Map<Topic>(topicViewModel);
 
             topic.DateCreated = DateTime.UtcNow;
-            
+
             await _topicRepository.CreateAsync(topic);
 
             return topicViewModel;
@@ -72,7 +72,7 @@
         /// <exception cref="TopicNotFoundException">Thrown when there there is no topic with such ID.</exception>
         public async Task<TopicViewModel> GetByIdAsync(int topicId)
         {
-            var entity = await _topicRepository.GetOneByAsync(expression: _=>_.Id.Equals(topicId));
+            var entity = await _topicRepository.GetOneByAsync(expression: _ => _.Id.Equals(topicId));
 
             if (entity is null)
             {

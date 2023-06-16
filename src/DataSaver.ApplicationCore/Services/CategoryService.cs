@@ -1,6 +1,6 @@
-﻿namespace DataSaver.Infrastructure.Services
+﻿namespace DataSaver.ApplicationCore.Services
 {
-    public sealed class CategoryService : ICategoryService  
+    public sealed class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
@@ -92,13 +92,8 @@
         /// <returns>The updated view model of a category.</returns>
         public async Task<CategoryViewModel> UpdateAsync(CategoryViewModel categoryViewModel)
         {
-            /*var modelFromDb = await _categoryRepository.GetOneByAsync(_ => _.Id.Equals(categoryViewModel.Id))
-                ?? throw new CategoryNotFoundException($"No category with id: {categoryViewModel.Id} was found");
-             var category = _mapper.Map<Category>(categoryViewModel);
-            //Log writed by handler*/
-
             var category = _mapper.Map<Category>(categoryViewModel);
-            var modelFromDb = await _categoryRepository.GetOneByAsync(expression: _=>_.Id.Equals(category.Id));
+            var modelFromDb = await _categoryRepository.GetOneByAsync(expression: _ => _.Id.Equals(category.Id));
             var modelFromDbCreated = modelFromDb!.DateCreated;
             category.DateCreated = modelFromDbCreated;
 
