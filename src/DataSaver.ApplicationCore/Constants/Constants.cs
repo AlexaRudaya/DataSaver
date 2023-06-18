@@ -1,4 +1,4 @@
-﻿namespace DataSaver.Infrastructure
+﻿namespace DataSaver.ApplicationCore.Constants
 {
     public sealed class Constants
     {

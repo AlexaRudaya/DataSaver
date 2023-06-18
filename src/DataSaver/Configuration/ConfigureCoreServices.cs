@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-
-namespace DataSaver.Configuration;
+﻿namespace DataSaver.Configuration;
 public static class ConfigureCoreServices
 {
     public static void ConfigureServices(IConfiguration configuration, IServiceCollection services,
